@@ -1,3 +1,5 @@
-# Phase 0 only needs these two. More will be added in later phases (e.g. FastAPI).
+# Only what we need so far. More will be added in later phases (e.g. FastAPI).
 requests==2.32.3   # downloads data from the Elexon website (makes HTTP requests)
 pandas==2.2.3      # works with tables of data in Python (like Excel, but in code)
+pyarrow==18.1.0    # lets pandas read and write Parquet files (our clean data format)
+pytest==8.3.4      # runs our automated tests (backend/tests/)

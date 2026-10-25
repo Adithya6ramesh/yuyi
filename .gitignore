@@ -1,0 +1,37 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ---------- Node / React (frontend, later phases) ----------
+node_modules/
+dist/
+build/
+.next/
+.vercel/
+npm-debug.log*
+yarn-error.log*
+
+# ---------- Secrets & editor junk ----------
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---------- Docs (kept locally, not committed) ----------
+docs/
+
+# ---------- Data ----------
+# Big downloads (later phases) can be re-created by running the scripts, so we don't
+# commit them. The small Phase 0 samples in backend/data/samples/ ARE committed so
+# anyone can look at them without running anything.
+backend/data/*
+!backend/data/samples/

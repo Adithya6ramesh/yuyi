@@ -3,7 +3,7 @@ Shared settings for the data pipeline: which dates we download and where files g
 Change things here, not in the individual scripts.
 """
 
-from datetime import date
+from datetime import date, time
 from pathlib import Path
 
 # Elexon's public API. No key needed.
@@ -21,6 +21,13 @@ ACTUALS_LAST_DAY = date(2026, 2, 3)
 # The month our purchase decisions are in. Used by the quality checks.
 DECISION_MONTH_START = "2026-01-01"
 DECISION_MONTH_END = "2026-02-01"  # not included
+
+# --- "Decision Day" mode: the fixed deadline on the day BEFORE delivery ---
+# Default 09:50 UTC = gate closure of Nord Pool's GB day-ahead auction (09:50 UK time;
+# UK time = UTC in January). Other exchanges (e.g. EPEX) have different deadlines,
+# so CONFIRM with the client which auction they actually use.
+# With 09:50, the 09:30 forecast of that morning is still usable.
+DECISION_DEADLINE_TIME = time(9, 50)
 
 # --- Folders ---
 BACKEND_DIR = Path(__file__).resolve().parents[2]  # .../backend

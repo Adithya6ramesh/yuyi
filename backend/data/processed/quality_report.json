@@ -1,0 +1,83 @@
+{
+  "actuals": {
+    "raw_rows": 1728,
+    "non_wind_rows_dropped": 0,
+    "duplicates_removed": 0,
+    "clean_rows": 1728,
+    "expected_half_hours": 1728,
+    "found_half_hours": 1728,
+    "missing_half_hours": [],
+    "half_hours_with_conflicting_values": 0,
+    "empty_values": 0,
+    "negative_values": 0,
+    "min_mw": 1695.0,
+    "max_mw": 17805.0,
+    "mean_mw": 11402.6
+  },
+  "forecasts": {
+    "raw_rows": 19272,
+    "duplicates_removed": 0,
+    "clean_rows": 19272,
+    "distinct_publish_times": 264,
+    "publish_times_of_day": [
+      "02:30",
+      "04:30",
+      "07:30",
+      "09:30",
+      "11:30",
+      "12:25",
+      "15:30",
+      "18:30",
+      "22:30"
+    ],
+    "days_without_8_publishes": {},
+    "distinct_target_hours": 841,
+    "target_hours_not_on_the_hour": 0,
+    "versions_per_target_hour_all": {
+      "min": 8,
+      "max": 32,
+      "typical": 24
+    },
+    "versions_per_january_target_hour": {
+      "min": 16,
+      "max": 32,
+      "typical": 24
+    },
+    "usable_versions_per_january_target_hour": {
+      "note": "only versions published at or before the target hour",
+      "min": 15,
+      "max": 23,
+      "typical": 19
+    },
+    "empty_values": 0,
+    "negative_values": 0,
+    "min_mw": 2250.0,
+    "max_mw": 21353.0
+  },
+  "lead_time": {
+    "min_hours": -25.5,
+    "max_hours": 66.5,
+    "median_hours": 21.5,
+    "counts_by_group": {
+      "negative (published after target)": 3961,
+      "0-6h": 1584,
+      "6-12h": 1584,
+      "12-24h": 3168,
+      "24-36h": 3168,
+      "36-48h": 3135,
+      "48h+": 2672
+    },
+    "january_targets": {
+      "longest_lead_available_for_every_hour": 43.5,
+      "longest_lead_available_for_some_hours": 66.5,
+      "shortest_lead_available_worst_case": 3.5
+    }
+  },
+  "scale_check": {
+    "hours_compared": 744,
+    "mean_actual_mw": 11581.1,
+    "mean_latest_forecast_mw": 13173.6,
+    "forecast_to_actual_ratio": 1.138,
+    "same_scale": true
+  }
+}

@@ -208,3 +208,27 @@ def select_forecasts_at_deadline(forecasts, delivery_date,
     targets = pd.DataFrame({"start_time": hours, "deadline": deadline})
     chosen = _newest_forecast_before(forecasts, targets)
     return chosen[["start_time", "forecast_mw", "publish_time", "lead_time_h", "deadline"]]
+
+
+def build_decision_day_comparison(actuals, forecasts, first_delivery_day="2026-01-02",
+                                  last_delivery_day="2026-02-01",
+                                  deadline_time=DECISION_DEADLINE_TIME):
+    """
+    Decision Day mode for many delivery days, side by side with the actuals.
+    Default: decisions made 1-31 Jan -> delivery days 2 Jan - 1 Feb.
+
+    Returns the same columns as build_comparison(), plus 'deadline':
+        start_time, actual_mw, forecast_mw, publish_time, lead_time_h, error_mw, deadline
+    """
+    days = pd.date_range(first_delivery_day, last_delivery_day, freq="D")
+    chosen = pd.concat(
+        [select_forecasts_at_deadline(forecasts, day.date(), deadline_time) for day in days],
+        ignore_index=True)
+    actual = pd.DataFrame({
+        "start_time": _utc_column(actuals["start_time"]),
+        "actual_mw": actuals["generation_mw"].to_numpy(),
+    })
+    table = chosen.merge(actual, on="start_time", how="left")
+    table["error_mw"] = table["actual_mw"] - table["forecast_mw"]
+    return table[["start_time", "actual_mw", "forecast_mw", "publish_time",
+                  "lead_time_h", "error_mw", "deadline"]]

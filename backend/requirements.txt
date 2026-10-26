@@ -1,8 +1,6 @@
-# Everything the backend needs. Install with: .venv\Scripts\python.exe -m pip install -r requirements.txt
-requests==2.32.3   # downloads data from the Elexon website (makes HTTP requests)
+# What the app needs to RUN (this is all the Docker image installs).
+# Install with: .venv\Scripts\python.exe -m pip install -r requirements.txt
 pandas==2.2.3      # works with tables of data in Python (like Excel, but in code)
 pyarrow==18.1.0    # lets pandas read and write Parquet files (our clean data format)
-pytest==8.3.4      # runs our automated tests (backend/tests/)
 fastapi==0.162.0   # the web framework: turns Python functions into web addresses (endpoints)
 uvicorn==0.54.0    # the web server that runs the FastAPI app
-httpx==0.28.1      # needed by FastAPI's TestClient (tests/test_api.py)

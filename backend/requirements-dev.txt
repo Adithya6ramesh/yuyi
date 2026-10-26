@@ -1,0 +1,7 @@
+# Extra tools for DEVELOPING: tests, and re-downloading the data from Elexon.
+# Installs everything in requirements.txt too.
+# Install with: .venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+-r requirements.txt
+requests==2.32.3   # downloads data from the Elexon website (app/data/fetch.py)
+pytest==8.3.4      # runs our automated tests (backend/tests/)
+httpx==0.28.1      # needed by FastAPI's TestClient (tests/test_api.py)

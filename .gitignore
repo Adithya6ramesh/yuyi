@@ -26,12 +26,15 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# ---------- Docs (kept locally, not committed) ----------
+# ---------- Docs & working notes (kept locally, not committed) ----------
 docs/
+CLAUDE.md
 
 # ---------- Data ----------
-# Big downloads (later phases) can be re-created by running the scripts, so we don't
-# commit them. The small Phase 0 samples in backend/data/samples/ ARE committed so
-# anyone can look at them without running anything.
+# Raw downloads (backend/data/raw/) can be re-created with `python -m app.data.fetch`,
+# so we don't commit them. These ARE committed:
+#   samples/   - small Phase 0 samples, to look at without running anything
+#   processed/ - the clean data the app reads (small: well under 1 MB)
 backend/data/*
 !backend/data/samples/
+!backend/data/processed/

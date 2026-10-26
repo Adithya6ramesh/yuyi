@@ -9,11 +9,10 @@
     /api/quality  how many forecast versions an hour typically gets
 */
 
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { getBacktest, getConfig, getQuality, getSeries, getSummary } from '../api.js'
 import { asciiBar, fmtAbout, fmtMw } from '../art/ascii.js'
-import { AsciiTurbineArt, FlowFieldBand, HeroScene, Ticker } from '../components/Animations.jsx'
+import { AsciiTurbineArt, FlowFieldBand, HeroScene } from '../components/Animations.jsx'
 import MethodFlow from '../components/MethodFlow.jsx'
 import SeriesChart from '../components/SeriesChart.jsx'
 import SkipLink from '../components/SkipLink.jsx'
@@ -234,30 +233,11 @@ export default function Landing() {
   const hours = summary.data ? fmtMw(summary.data.hours_counted) : '…'
   const versions = quality.data?.forecasts?.versions_per_january_target_hour?.typical
 
-  // e.g. caution 90% -> the 5th and 95th percentiles of the misses
+  // e.g. caution 90% -> the cushion is the 5th percentile of the misses
   const tail = cfg ? (100 - cfg.default_confidence) / 2 : null
   const pct = (p) => `p${String(p).padStart(2, '0')}`
-  const percentiles = tail != null ? `${pct(tail)} / ${pct(100 - tail)}` : 'percentiles'
   const cushionFormula =
     tail != null ? `cushion = −${pct(tail)}(miss)` : 'cushion = a low percentile of the miss'
-
-  const tickerText = useMemo(
-    () =>
-      [
-        'FUELHH',
-        'fuelType = WIND',
-        'startTime',
-        'generation (MW)',
-        'WINDFOR',
-        'publishTime',
-        'latest forecast before T − H',
-        'miss = actual − forecast',
-        percentiles,
-        'back-test on unseen days',
-        'day-ahead market',
-      ].join(' ◆ ') + ' ◆',
-    [percentiles],
-  )
 
   return (
     <div className="landing">
@@ -312,8 +292,6 @@ export default function Landing() {
           </div>
           <HeroScene horizonHours={cfg?.horizon_slider.default} />
         </section>
-
-        <Ticker text={tickerText} />
 
         {/* 01 PROBLEM */}
         <section id="problem" className="section wrap">

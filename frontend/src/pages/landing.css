@@ -187,38 +187,6 @@
   text-align: right;
 }
 
-/* --- ticker -------------------------------------------------------------- */
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.ticker {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  background: var(--bg-alt);
-  overflow: hidden;
-}
-.ticker__track {
-  display: flex;
-  width: max-content;
-  padding: 14px 0;
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted-2);
-  white-space: nowrap;
-  animation: marquee 48s linear infinite;
-}
-.ticker__track span {
-  padding-right: 48px;
-}
-
 /* --- shared section pieces ---------------------------------------------- */
 
 .section {

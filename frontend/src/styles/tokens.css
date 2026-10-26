@@ -5,7 +5,7 @@
 :root {
   /* backgrounds */
   --bg: #050b08; /* page */
-  --bg-alt: #071009; /* alternate bands (ticker, wind field, CTA) */
+  --bg-alt: #071009; /* alternate bands (wind field, CTA) */
   --bg-hover: #0a1912; /* row hover */
 
   /* lines */

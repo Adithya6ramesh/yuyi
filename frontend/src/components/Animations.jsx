@@ -86,15 +86,3 @@ export function AsciiTurbineArt() {
     </pre>
   )
 }
-
-/** The scrolling ticker tape (pure CSS animation, stops for reduced motion). */
-export function Ticker({ text }) {
-  return (
-    <div className="ticker" aria-hidden="true">
-      <div className="ticker__track">
-        <span>{text}</span>
-        <span>{text}</span>
-      </div>
-    </div>
-  )
-}

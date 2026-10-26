@@ -293,7 +293,7 @@ library).
   - **Shape:** hairline dividers, sharp corners, text symbols instead of icons.
   - **Not allowed:** gradients, glows or "card" layouts.
 - **Animations** (3D wireframe turbine and terrain, ASCII wind field, ASCII turbine,
-  ticker, mini mesh, the method flow chart's moving packet) share one clock,
+  mini mesh, the method flow chart's moving packet) share one clock,
   `hooks/useAnimationClock.js`. It **freezes** them when the computer asks for reduced
   motion, when the tab is hidden, and when they're scrolled out of view. CSS animations
   stop under reduced motion too.

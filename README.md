@@ -9,13 +9,44 @@ accurate those forecasts were. That tells the company how big a safety margin to
 - **Times:** all UTC, which is the same as UK time in January.
 - **No prediction model:** the app only displays and evaluates forecasts that already exist.
 
-## Run it (backend + frontend)
+## How to run
 
-You need two terminals, one for each part.
+### Run with Docker (easiest)
+
+You need [Docker Desktop](https://www.docker.com/products/docker-desktop/), running.
+Then, from this folder:
+
+```powershell
+docker compose up --build
+```
+
+Open <http://localhost:8080>. The landing page is at `/`, the dashboard ("the desk") is
+at `/desk`, and the API's interactive docs are at `/docs`. Stop it with **Ctrl + C**.
+
+- No internet is needed after the first build. The cleaned January data is inside the
+  backend image, so nothing is downloaded from Elexon.
+- How it fits together:
+  - The `frontend` container (nginx) serves the React app and forwards `/api/...` to the
+    `backend` container (FastAPI). The browser only talks to one address, so no CORS
+    set-up is needed.
+  - The frontend starts only once the backend's health check (`/api/health`) passes.
+- Run the backend tests inside Docker:
+
+  ```powershell
+  docker compose --profile test run --rm backend-tests
+  ```
+- Image sizes: backend about 600 MB (mostly pandas, numpy and pyarrow), frontend about
+  75 MB.
+
+### Run without Docker (for development)
+
+You need Python 3.11 and Node 22. Open two terminals, one for each part.
 
 ```powershell
 # terminal 1: the backend (Python), on http://127.0.0.1:8000
 cd backend
+python -m venv .venv                                          # first time only
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt # first time only
 .venv\Scripts\python.exe -m uvicorn app.main:app --reload
 
 # terminal 2: the frontend (React), on http://localhost:5173
@@ -24,10 +55,17 @@ npm install        # first time only
 npm run dev
 ```
 
-Open <http://localhost:5173>. The landing page is at `/` and the dashboard ("the desk")
-is at `/desk`. While developing, the frontend's `/api/...` requests are passed on to the
-backend by Vite's proxy (`frontend/vite.config.js`). When deployed, set `VITE_API_URL`
-to the backend's address instead (see `frontend/.env.example`).
+Open <http://localhost:5173>.
+
+- **Proxy:** the frontend's `/api/...` requests are passed on to the backend by Vite's
+  proxy (`frontend/vite.config.js`).
+- **Deployed:** set `VITE_API_URL` to the backend's address (see
+  `frontend/.env.example`), and set `ALLOWED_ORIGINS` on the backend to the site's
+  address (comma-separated). That second one is the CORS setting; it defaults to
+  `http://localhost:5173`.
+- **Requirements files:**
+  - `backend/requirements.txt` is only what the app needs to run.
+  - `requirements-dev.txt` adds the test tools and the Elexon downloader.
 
 ## Frontend
 
@@ -60,7 +98,7 @@ date is a delivery day written as `YYYY-MM-DD`.
 
 ```powershell
 cd backend
-.venv\Scripts\python.exe -m pip install -r requirements.txt   # first time only
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt   # first time only
 .venv\Scripts\python.exe -m uvicorn app.main:app --reload
 ```
 

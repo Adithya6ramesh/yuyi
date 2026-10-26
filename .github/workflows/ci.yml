@@ -1,13 +1,18 @@
 # Automatic checks (GitHub Actions). On every push and pull request, GitHub runs these
-# three jobs on fresh Linux machines and shows a green tick or a red cross per commit.
+# four jobs on fresh Linux machines and shows a green tick or a red cross per commit.
 #   backend:  lint, format check and tests for the Python API
 #   frontend: lint, format check, tests and a production build of the React app
 #   docker:   builds both images, starts them, and checks the app answers on port 8080
+#   audit:    fails if any dependency has a known security vulnerability
 name: CI
 
 on:
   push:
   pull_request:
+
+# The jobs only read the code; they can't push, comment or change anything on GitHub.
+permissions:
+  contents: read
 
 jobs:
   backend:
@@ -79,3 +84,21 @@ jobs:
       - name: Stop the containers
         if: always()
         run: docker compose down
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Python packages (pip-audit)
+        run: |
+          pip install pip-audit
+          pip-audit -r backend/requirements.txt -r backend/requirements-dev.txt
+      - name: JavaScript packages (npm audit)
+        working-directory: frontend
+        run: npm audit --audit-level=moderate

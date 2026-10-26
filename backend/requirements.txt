@@ -2,6 +2,6 @@
 # Install with: .venv\Scripts\python.exe -m pip install -r requirements.txt
 pandas==2.2.3      # works with tables of data in Python (like Excel, but in code)
 numpy==2.4.6       # maths under pandas; pinned to the tested version (newer versions warn with pandas 2.2)
-pyarrow==18.1.0    # lets pandas read and write Parquet files (our clean data format)
+pyarrow==23.0.1    # lets pandas read and write Parquet files (our clean data format)
 fastapi==0.162.0   # the web framework: turns Python functions into web addresses (endpoints)
 uvicorn==0.54.0    # the web server that runs the FastAPI app

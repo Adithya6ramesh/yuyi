@@ -2,7 +2,7 @@
 # Installs everything in requirements.txt too.
 # Install with: .venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 -r requirements.txt
-requests==2.32.3   # downloads data from the Elexon website (app/data/fetch.py)
-pytest==8.3.4      # runs our automated tests (backend/tests/)
+requests==2.33.0   # downloads data from the Elexon website (app/data/fetch.py)
+pytest==9.0.3      # runs our automated tests (backend/tests/)
 httpx==0.28.1      # needed by FastAPI's TestClient (tests/test_api.py)
 ruff==0.17.2       # lint + format checks (pyproject.toml)

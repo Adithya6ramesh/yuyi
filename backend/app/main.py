@@ -45,9 +45,10 @@ app = FastAPI(
 # address unless that server says "this page is allowed".
 # Which addresses are allowed comes from the ALLOWED_ORIGINS environment variable
 # (comma-separated, e.g. "https://windhedge.vercel.app,http://localhost:5173").
-# Default: the React development server (Vite, port 5173).
+# Default: the React development server (Vite, port 5173), except on Vercel, where the
+# site and the API share one address, so no other site needs to be allowed.
 # (In Docker it isn't needed: nginx serves the page AND forwards /api, so it's one address.)
-DEFAULT_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"
+DEFAULT_ORIGINS = "" if os.environ.get("VERCEL") else "http://localhost:5173,http://127.0.0.1:5173"
 ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get("ALLOWED_ORIGINS", DEFAULT_ORIGINS).split(",")

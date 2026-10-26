@@ -16,7 +16,7 @@ services:
     environment:
       # Which web pages may call the API from another address (CORS). Not needed here,
       # because nginx serves the page and the API from one address, but it shows where
-      # the deployed site's address goes in Phase 8.
+      # a separately hosted site's address would go.
       ALLOWED_ORIGINS: http://localhost:8080
     restart: unless-stopped
 

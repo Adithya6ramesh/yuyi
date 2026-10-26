@@ -5,7 +5,7 @@ Caching in one sentence: the first time someone asks for, say, "H = 24", we work
 answer out and keep it in memory, so every later request for the same thing is
 answered instantly instead of being recalculated.
 
-Nothing here invents new maths. Every number comes from app/core/ (Phases 2-3):
+Nothing here invents new maths. Every number comes from app/core/:
     matching.py -> which forecast was available, side by side with the actual
     metrics.py  -> miss, lean, wobble, breakdowns
     cushion.py  -> the safety cushion and the back-test

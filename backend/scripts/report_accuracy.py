@@ -1,9 +1,9 @@
 """
-Phase 3 report: accuracy numbers, breakdowns, safety cushion and back-test,
+Accuracy report: accuracy numbers, breakdowns, safety cushion and back-test,
 on the real January 2026 data.
 
 Run from the backend/ folder:
-    .venv\\Scripts\\python.exe scripts\\report_phase3.py
+    .venv\\Scripts\\python.exe scripts\\report_accuracy.py
 """
 
 import sys

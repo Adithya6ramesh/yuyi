@@ -7,7 +7,7 @@ __pycache__/
 .env
 .env.*
 
-# Raw Elexon downloads and Phase 0 samples: the app only reads data/processed/.
+# Raw Elexon downloads and first-look samples: the app only reads data/processed/.
 data/raw/
 data/samples/
 

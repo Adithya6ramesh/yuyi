@@ -13,7 +13,7 @@ What it does:
   6. Saves the result as Parquet files in backend/data/processed/
   7. Runs the quality checks and writes quality_report.json
 
-IMPORTANT: every forecast version (every publish_time) is kept. Phase 2 needs all of
+IMPORTANT: every forecast version (every publish_time) is kept. The matching rule needs all of
 them to pick the forecast that was really available at decision time.
 """
 

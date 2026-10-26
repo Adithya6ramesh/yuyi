@@ -1,4 +1,4 @@
-/* The data-checks strip along the bottom of the desk, from the Phase 1 quality report. */
+/* The data-checks strip along the bottom of the desk, from the data quality report. */
 
 import { getQuality } from '../../api.js'
 import { fmtMw } from '../../art/ascii.js'

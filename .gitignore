@@ -34,7 +34,7 @@ CLAUDE.md
 # ---------- Data ----------
 # Raw downloads (backend/data/raw/) can be re-created with `python -m app.data.fetch`,
 # so we don't commit them. These ARE committed:
-#   samples/   - small Phase 0 samples, to look at without running anything
+#   samples/   - small first-look samples, to look at without running anything
 #   processed/ - the clean data the app reads (small: well under 1 MB)
 backend/data/*
 !backend/data/samples/

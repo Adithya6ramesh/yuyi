@@ -393,7 +393,7 @@ def decision_day(
 
 @router.get("/quality")
 def quality():
-    """The Phase 1 data quality report (gaps, duplicates, lead times, notes)."""
+    """The data quality report (gaps, duplicates, lead times, scale check)."""
     return store.get("quality")
 
 

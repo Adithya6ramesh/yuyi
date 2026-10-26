@@ -24,7 +24,7 @@ import pandas as pd
 
 from app.core.matching import build_comparison
 
-SLIDER_HOURS = range(0, 44)  # 0..43 hours ahead, as decided in Phase 1
+SLIDER_HOURS = range(0, 44)  # 0..43 hours ahead: every January hour has a forecast that far ahead
 WIND_LEVELS = ["low", "medium", "high"]
 
 

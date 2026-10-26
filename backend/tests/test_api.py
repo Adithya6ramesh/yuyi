@@ -146,7 +146,7 @@ def test_decision_day_uses_one_deadline_the_day_before(client):
 
 
 # ---------------------------------------------------------------------------
-# The API serves the Phase 3 numbers unchanged
+# The API serves the metrics numbers unchanged
 # ---------------------------------------------------------------------------
 
 

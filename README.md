@@ -13,7 +13,7 @@ forecasts that already exist.
 
 ![The Windhedge desk: controls, headline numbers and the forecast-vs-actual chart](docs/screenshots/desk.png)
 
-**Live demo:** *coming soon (Phase 8)*
+**Live demo:** <https://windhedge.vercel.app> (the desk: <https://windhedge.vercel.app/desk>)
 
 ## Quick start
 
@@ -62,10 +62,12 @@ Open <http://localhost:5173>. Vite's proxy passes `/api/...` to the backend.
 
 The whole app is containerised: `docker compose up --build` runs the frontend (nginx) and
 the API (FastAPI) with no other setup, and CI builds and starts both images on every
-push. For hosting I chose Vercel, one of the two platforms in the brief. Vercel doesn't
-run Docker containers; it runs FastAPI natively as serverless functions, so the deployed
-app uses the same code without the container. Heroku would run the container directly,
-but has no free plan.
+push. For hosting I chose Vercel, one of the two platforms in the brief. Vercel can also
+run Docker images, but that feature (Container Runtime) is still in beta, so the live site
+uses Vercel's generally available FastAPI support instead: one serverless function runs the
+same API code, and the built React app is served from Vercel's CDN on the same address.
+Heroku would run the container directly, but has no free plan. How the deployment is set
+up: [DESIGN.md §8](docs/DESIGN.md#8-docker-and-deployment).
 
 ## Documentation
 

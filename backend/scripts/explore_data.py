@@ -1,5 +1,5 @@
 """
-Phase 0 - explore the Elexon wind data.
+First look: explore the Elexon wind data before building anything.
 
 What this script does (read top to bottom, it is meant to be read like a story):
   1. Downloads a small sample of ACTUAL wind generation  (FUELHH dataset)

@@ -251,8 +251,18 @@ on the automatic **`/docs`** page.
 | `GET /api/export.csv` | The `/api/series` rows as a CSV download |
 
 - **Data loading and caching:** the data is loaded **once at start-up**. Results are
-  **cached** per (mode, H, caution level), so repeat requests take about 0.01 s. The
-  first Decision day or horizon-curve request takes 1–2 s.
+  **cached** per (mode, H, caution level), so repeat requests take about 0.01 s.
+- **Precomputed results:** the two slowest calculations are also saved as small JSON
+  files in `backend/data/processed/precomputed/` (`app/api/precomputed.py`):
+  - the whole-month horizon curve (about 1–2.5 s to compute);
+  - the Decision day table (about 1 s).
+
+  A fresh copy of the API answers these in about 0.01–0.04 s instead. Other date ranges
+  are still computed live.
+  - **They can't go stale:** `scripts/precompute.py` makes them with the same functions
+    the API uses, and `tests/test_precomputed.py` rebuilds them on every CI run and
+    fails on any difference. A 1 MW change, or changed data without a re-run, is caught.
+  - If the files are missing, the API simply computes live.
 - **Input checks:** bad inputs return **422** with a plain-English `error`, e.g. *"horizon
   must be a whole number of hours from 0 to 43. 43 is the limit because…"*.
 - **CORS:** the addresses allowed to call the API come from `ALLOWED_ORIGINS`
@@ -338,8 +348,9 @@ native (generally available) FastAPI support. It's one Vercel project with **Roo
   caches. The bundle is far below Vercel's 500 MB Python limit.
 - **Python version:** Vercel offers 3.12–3.14, so Docker and CI use **3.12** too, and NumPy
   is pinned to the tested version.
-- **Cold starts:** each new serverless copy loads the data and starts with an empty cache,
-  so first requests are slower. The first horizon-curve request takes about 2 s.
+- **Cold starts:** each new serverless copy has to start Python, load pandas and read the
+  data (about 1 s). The slowest results are precomputed (see §6), so nothing on the first
+  page load has to be worked out from scratch.
 - **Why not run our Docker image on Vercel?** Vercel's Container Runtime can now run Docker
   images, but it's in **beta**. The native runtime is generally available and serves the
   React build from the CDN.
@@ -391,7 +402,7 @@ Every push to `main` then redeploys.
 
 | Where | What | How to run |
 |---|---|---|
-| `backend/tests/` (pytest) | Cleaning, matching rule (incl. "no cheating"), metrics with hand-checkable numbers, cushion and back-test, every API endpoint, bad inputs, CSV columns, CORS setting | `cd backend` → `.venv\Scripts\python.exe -m pytest` |
+| `backend/tests/` (pytest) | Cleaning, matching rule (incl. "no cheating"), metrics with hand-checkable numbers, cushion and back-test, every API endpoint, bad inputs, CSV columns, CORS setting, Vercel setup, precomputed results match the live code | `cd backend` → `.venv\Scripts\python.exe -m pytest` |
 | `frontend/src/test/` (Vitest + Testing Library) | Friendly API errors, URL building, slider → request (with debounce), CSV link, Decision day mode, keyboard access, 404 page | `cd frontend` → `npm test` |
 | Lint / format | ruff (backend), ESLint + Prettier (frontend) | see README |
 

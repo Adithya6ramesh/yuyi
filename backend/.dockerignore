@@ -16,3 +16,6 @@ scripts/
 
 # Note: tests/ is NOT ignored, because the separate "test" stage needs it.
 # The normal (runtime) image never copies tests/ in.
+
+# Built React app for the one-address (Vercel) setup; made by scripts/build_frontend.py
+frontend_dist/

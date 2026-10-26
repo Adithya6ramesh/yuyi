@@ -301,7 +301,7 @@ library).
 `docker compose up --build` runs everything, then open <http://localhost:8080>.
 
 - **backend image:**
-  - `python:3.11-slim` with only the runtime requirements, the app and the processed data,
+  - `python:3.12-slim` with only the runtime requirements, the app and the processed data,
     so it needs no internet;
   - runs as a non-root user on `0.0.0.0:8000`, with a `HEALTHCHECK` on `/api/health`;
   - about 600 MB, mostly pandas, numpy and pyarrow.
@@ -316,12 +316,43 @@ library).
   (`docker compose --profile test run --rm backend-tests`). The normal image contains no
   tests and no pytest.
 
-**Hosting:** the brief allows Vercel or Heroku.
-- **Vercel** (chosen) doesn't run Docker containers. It runs the static React build plus
-  FastAPI as serverless Python functions, so the deployed app uses **the same code without
-  the container**, for free.
+**Hosting:** the brief allows Vercel or Heroku. The app is set up for **Vercel**, using its
+native (generally available) FastAPI support. It's one Vercel project with **Root Directory
+`backend/`**:
+
+- **Finding the app:** Vercel finds `app/main.py` and its `app` by itself, and installs the
+  dependencies listed in `backend/pyproject.toml`. That list must match `requirements.txt`,
+  and a test checks it does.
+- **Building the website:** the build step (`scripts/build_frontend.py`, set in
+  `pyproject.toml`) builds the React app into `backend/frontend_dist/`.
+- **One address:** `main.py` hands that folder to FastAPI's `app.frontend("/",
+  fallback="index.html")`, and Vercel serves those files from its CDN. So the site and the
+  API share one address:
+  - `/api/*`, `/docs` and `/openapi.json` reach FastAPI (API routes always win);
+  - every other page address gets `index.html`, so refreshing `/desk` works and unknown
+    addresses show the app's 404 screen.
+  - The frontend keeps calling `/api/...` (`VITE_API_URL` stays empty), and no CORS is
+    needed. `ALLOWED_ORIGINS` still works for other setups.
+- **What goes into the function:** the processed data travels with the function.
+  `backend/vercel.json` (`excludeFiles`) leaves out tests, scripts, raw and sample data, and
+  caches. The bundle is far below Vercel's 500 MB Python limit.
+- **Python version:** Vercel offers 3.12–3.14, so Docker and CI use **3.12** too, and NumPy
+  is pinned to the tested version.
+- **Cold starts:** each new serverless copy loads the data and starts with an empty cache,
+  so first requests are slower. The first horizon-curve request takes about 2 s.
+- **Why not run our Docker image on Vercel?** Vercel's Container Runtime can now run Docker
+  images, but it's in **beta**. The native runtime is generally available and serves the
+  React build from the CDN.
 - **Heroku** would run the container directly but has no free plan.
 - Docker is still proven on every push: CI builds and starts both images (see §9).
+
+**Deploying:**
+1. On vercel.com, choose Add New → Project and import the GitHub repository.
+2. Set **Root Directory** to `backend` and keep "Include files outside the root directory in
+   the Build Step" on (the build needs `frontend/`).
+3. Deploy. No environment variables are needed.
+
+Every push to `main` then redeploys.
 
 ## 9. Testing and CI
 
@@ -334,7 +365,7 @@ library).
 **CI** (`.github/workflows/ci.yml`, GitHub Actions, on every push and pull request) has
 three jobs:
 
-1. **backend:** Python 3.11, `ruff check`, `ruff format --check`, `pytest`.
+1. **backend:** Python 3.12, `ruff check`, `ruff format --check`, `pytest`.
 2. **frontend:** Node 22, `npm ci`, ESLint, Prettier check, `npm test`, `npm run build`.
 3. **docker:** builds both images, starts them with `docker compose`, waits until
    `/api/health` answers **through nginx on port 8080**, then stops them.

@@ -1,12 +1,39 @@
-# Settings for ruff, the backend's linter (finds likely mistakes) and formatter
-# (lays code out in one consistent style).
-#   Check:   .venv\Scripts\python.exe -m ruff check .
-#   Format:  .venv\Scripts\python.exe -m ruff format .
+# Backend project settings: Vercel deployment and ruff (lint + format).
 # (pytest's settings stay in pytest.ini.)
 
+# --- What Vercel installs -----------------------------------------------------------
+# Vercel reads the dependency list from here. It MUST match requirements.txt (which
+# Docker and CI use); tests/test_api.py checks the two stay identical.
+[project]
+name = "windhedge-backend"
+version = "0.8.0"
+requires-python = ">=3.12" # Vercel offers 3.12 (default), 3.13 and 3.14
+dependencies = [
+    "pandas==2.2.3",
+    "numpy==2.4.6",
+    "pyarrow==18.1.0",
+    "fastapi==0.162.0",
+    "uvicorn==0.54.0",
+]
+
+# --- Vercel deployment ---------------------------------------------------------------
+# Vercel finds the app by itself: app/main.py, variable `app` (with Root Directory = backend).
+# Before deploying, build the React app into frontend_dist/ (see the script).
+[tool.vercel.scripts]
+build = "python scripts/build_frontend.py"
+
+# Serve the built React app from Vercel's CDN (fast, and not part of the Python bundle).
+# cdn = true: our CORS middleware only matters for /api, not for static files.
+[tool.vercel.fastapi.static]
+cdn = true
+exclude = true
+
+# --- ruff: the linter (finds likely mistakes) and formatter (one consistent style) ---
+#   Check:   .venv\Scripts\python.exe -m ruff check .
+#   Format:  .venv\Scripts\python.exe -m ruff format .
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.lint]
 # E/W: style errors, F: real mistakes (unused imports, undefined names),

@@ -39,3 +39,7 @@ CLAUDE.md
 backend/data/*
 !backend/data/samples/
 !backend/data/processed/
+
+# ---------- Vercel ----------
+# Built React app copied into the backend at deploy time (backend/scripts/build_frontend.py)
+backend/frontend_dist/

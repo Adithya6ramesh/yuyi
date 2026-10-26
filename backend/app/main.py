@@ -10,10 +10,12 @@ This file only wires things together:
     - allow the React dev server to call us    (CORS, below)
     - friendly error messages                  (errors.py)
     - the endpoints, all under /api            (routes.py)
+    - the built React app, when it exists      (on Vercel; see FRONTEND_DIR below)
 """
 
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -62,8 +64,20 @@ app.add_middleware(
 errors.register(app)
 app.include_router(router, prefix="/api")
 
+# The built React app, if there is one (on Vercel, scripts/build_frontend.py puts it here).
+# With it, this one app serves the whole site: the API routes above (/api/..., /docs)
+# always win, and every other page address gets the React app's index.html, so /desk
+# works on refresh and unknown addresses show the app's own 404 screen.
+# Without it (local development, Docker), the frontend runs separately, as before.
+FRONTEND_DIR = Path(
+    os.environ.get("FRONTEND_DIST", Path(__file__).resolve().parents[1] / "frontend_dist")
+)
 
-@app.get("/", include_in_schema=False)
-def home():
-    """Opening the bare address sends you to the interactive docs page."""
-    return RedirectResponse("/docs")
+if FRONTEND_DIR.is_dir():
+    app.frontend("/", directory=FRONTEND_DIR, fallback="index.html")
+elif not os.environ.get("VERCEL"):  # Vercel sets VERCEL=1; there "/" is the landing page
+
+    @app.get("/", include_in_schema=False)
+    def home():
+        """Opening the bare address sends you to the interactive docs page."""
+        return RedirectResponse("/docs")

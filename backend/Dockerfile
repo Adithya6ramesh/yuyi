@@ -10,7 +10,7 @@
 # Run the tests in Docker:    docker compose --profile test run --rm backend-tests
 
 # ---------- base ----------
-FROM python:3.11-slim AS base
+FROM python:3.12-slim AS base
 
 # Don't write .pyc files, print logs straight away, keep pip quiet and small.
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -34,7 +34,7 @@ RUN useradd --create-home --uid 10001 appuser
 
 # ---------- test ----------
 FROM base AS test
-COPY requirements-dev.txt pytest.ini ./
+COPY requirements-dev.txt pytest.ini pyproject.toml ./
 RUN pip install -r requirements-dev.txt
 COPY tests/ tests/
 USER appuser

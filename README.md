@@ -34,7 +34,7 @@ Stop it with **Ctrl + C**.
 
 ### Without Docker (for development)
 
-You need Python 3.11 and Node 22. Use two terminals:
+You need Python 3.12 (what Vercel, Docker and CI use; 3.11 also works) and Node 22. Use two terminals:
 
 ```powershell
 # terminal 1: the API, on http://127.0.0.1:8000

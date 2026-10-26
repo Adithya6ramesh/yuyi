@@ -222,3 +222,40 @@ def test_allowed_origins_come_from_the_environment(monkeypatch):
     finally:
         monkeypatch.delenv("ALLOWED_ORIGINS")
         importlib.reload(main_module)  # back to the default for any later tests
+
+
+# ---------------------------------------------------------------------------
+# Deployment (Vercel): one app serves the built website AND the API
+# ---------------------------------------------------------------------------
+
+
+def test_vercel_dependency_list_matches_requirements_txt():
+    # Vercel installs from pyproject.toml; Docker and CI from requirements.txt.
+    import tomllib
+    from pathlib import Path
+
+    backend = Path(__file__).resolve().parents[1]
+    project = tomllib.loads((backend / "pyproject.toml").read_text(encoding="utf-8"))
+    lines = (backend / "requirements.txt").read_text(encoding="utf-8").splitlines()
+    pinned = {line.split("#")[0].strip() for line in lines} - {""}
+    assert set(project["project"]["dependencies"]) == pinned
+
+
+def test_built_frontend_is_served_alongside_the_api(tmp_path, monkeypatch):
+    import app.main as main_module
+
+    (tmp_path / "index.html").write_text('<!doctype html><div id="root"></div>', encoding="utf-8")
+    monkeypatch.setenv("FRONTEND_DIST", str(tmp_path))
+    try:
+        reloaded = importlib.reload(main_module)
+        page = {"Accept": "text/html"}  # what a browser sends when opening a page
+        with TestClient(reloaded.app) as site:
+            for path in ["/", "/desk", "/nonsense/page"]:  # refresh on any page works
+                response = site.get(path, headers=page)
+                assert response.status_code == 200, path
+                assert '<div id="root">' in response.text, path
+            assert site.get("/api/health").json()["status"] == "ok"  # the API still wins
+            assert "swagger" in site.get("/docs").text.lower()  # FastAPI's docs page too
+    finally:
+        monkeypatch.delenv("FRONTEND_DIST")
+        importlib.reload(main_module)  # back to the normal setup for later tests

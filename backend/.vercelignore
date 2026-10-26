@@ -1,0 +1,7 @@
+# Files the Vercel CLI never uploads (Git deployments only see committed files anyway).
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+data/raw/
+frontend_dist/

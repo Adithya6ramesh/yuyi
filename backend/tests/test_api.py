@@ -9,6 +9,7 @@ Run from the backend/ folder:
 """
 
 import csv
+import importlib
 import io
 
 import pandas as pd
@@ -180,3 +181,15 @@ def test_export_csv_has_expected_columns(client):
 def test_frontend_dev_server_is_allowed(client):
     response = client.get("/api/health", headers={"Origin": "http://localhost:5173"})
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+
+
+def test_allowed_origins_come_from_the_environment(monkeypatch):
+    import app.main as main_module
+
+    monkeypatch.setenv("ALLOWED_ORIGINS", "https://windhedge.example, http://localhost:8080 ,")
+    try:
+        reloaded = importlib.reload(main_module)  # re-read the setting, as at start-up
+        assert reloaded.ALLOWED_ORIGINS == ["https://windhedge.example", "http://localhost:8080"]
+    finally:
+        monkeypatch.delenv("ALLOWED_ORIGINS")
+        importlib.reload(main_module)  # back to the default for any later tests

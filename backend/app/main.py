@@ -12,6 +12,7 @@ This file only wires things together:
     - the endpoints, all under /api            (routes.py)
 """
 
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -39,11 +40,21 @@ app = FastAPI(
 )
 
 # CORS in one sentence: browsers block a web page from calling a server on a different
-# address unless that server says "this page is allowed" - here we allow the React
-# development server (Vite runs on port 5173).
+# address unless that server says "this page is allowed".
+# Which addresses are allowed comes from the ALLOWED_ORIGINS environment variable
+# (comma-separated, e.g. "https://windhedge.vercel.app,http://localhost:5173").
+# Default: the React development server (Vite, port 5173).
+# (In Docker it isn't needed: nginx serves the page AND forwards /api, so it's one address.)
+DEFAULT_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("ALLOWED_ORIGINS", DEFAULT_ORIGINS).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["GET"],
     allow_headers=["*"],
 )

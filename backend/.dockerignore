@@ -1,0 +1,18 @@
+# Files Docker never copies into an image (keeps images small and private).
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+
+# Raw Elexon downloads and Phase 0 samples: the app only reads data/processed/.
+data/raw/
+data/samples/
+
+# One-off analysis scripts, not part of the app.
+scripts/
+
+# Note: tests/ is NOT ignored, because the separate "test" stage needs it.
+# The normal (runtime) image never copies tests/ in.

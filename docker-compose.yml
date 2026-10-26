@@ -1,0 +1,40 @@
+# Run the whole app with ONE command (from this folder):
+#     docker compose up --build
+# then open http://localhost:8080
+#
+# Stop it with Ctrl + C (or `docker compose down` from another terminal).
+# Run the backend tests in Docker:
+#     docker compose --profile test run --rm backend-tests
+
+services:
+  # The Python API. Not opened to your computer directly: everything goes through nginx.
+  backend:
+    build:
+      context: ./backend
+      target: runtime
+    image: windhedge-backend
+    environment:
+      # Which web pages may call the API from another address (CORS). Not needed here,
+      # because nginx serves the page and the API from one address, but it shows where
+      # the deployed site's address goes in Phase 8.
+      ALLOWED_ORIGINS: http://localhost:8080
+    restart: unless-stopped
+
+  # nginx: serves the React app and forwards /api to the backend.
+  frontend:
+    build: ./frontend
+    image: windhedge-frontend
+    ports:
+      - "8080:8080" # your computer's port 8080 -> the container's port 8080
+    depends_on:
+      backend:
+        condition: service_healthy # wait until /api/health answers
+    restart: unless-stopped
+
+  # Only runs when asked for (--profile test): the backend tests inside Docker.
+  backend-tests:
+    build:
+      context: ./backend
+      target: test
+    image: windhedge-backend-tests
+    profiles: ["test"]

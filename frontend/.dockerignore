@@ -1,0 +1,11 @@
+# Files Docker never copies into the build (keeps it fast, small and private).
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+
+# Design mockups and tests aren't needed to build the app.
+design/
+src/test/

@@ -90,8 +90,8 @@ export default function Controls({ config, settings, onChange }) {
           <>
             <p className="control__label">Forecast used</p>
             <p className="control__note">
-              The newest forecast out by <strong>{deadline} UTC the day before</strong> delivery: one
-              fixed deadline for all 24 hours, as on the real trading desk.
+              The newest forecast out by <strong>{deadline} UTC the day before</strong> delivery: one fixed
+              deadline for all 24 hours, as on the real trading desk.
             </p>
           </>
         )}

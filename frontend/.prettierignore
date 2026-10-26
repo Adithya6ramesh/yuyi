@@ -1,0 +1,5 @@
+# Prettier (the formatter) leaves these alone.
+dist/
+design/
+node_modules/
+package-lock.json

@@ -29,8 +29,7 @@ export const dayMonth = (value) =>
   utc(value).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' }).toUpperCase()
 
 /** "2026-01-15T10:00:00Z" -> "15 JAN 10:00" */
-export const dayMonthTime = (value) =>
-  `${dayMonth(value)} ${utc(value).toISOString().slice(11, 16)}`
+export const dayMonthTime = (value) => `${dayMonth(value)} ${utc(value).toISOString().slice(11, 16)}`
 
 /** "2026-01-15", "2026-01-16" -> "15–16 Jan 2026" */
 export function dateSpan(start, end) {

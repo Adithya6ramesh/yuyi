@@ -27,16 +27,19 @@ export default function DataChecks() {
     items = (
       <ul className="checks__list">
         <Check ok={actuals.missing_half_hours.length === 0}>
-          {fmtMw(actuals.found_half_hours)} of {fmtMw(actuals.expected_half_hours)} half-hours of actual wind present
+          {fmtMw(actuals.found_half_hours)} of {fmtMw(actuals.expected_half_hours)} half-hours of actual wind
+          present
         </Check>
         <Check ok>{fmtMw(duplicates)} duplicate rows removed</Check>
         <Check ok>
           {usable.min}–{usable.max} usable forecasts per hour (typically {usable.typical})
         </Check>
-        <Check ok>every hour has a forecast up to {lead.january_targets.longest_lead_available_for_every_hour}h ahead</Check>
+        <Check ok>
+          every hour has a forecast up to {lead.january_targets.longest_lead_available_for_every_hour}h ahead
+        </Check>
         <Check ok={false}>
-          {fmtMw(lead.counts_by_group['negative (published after target)'])} forecasts published after their hour:
-          never used
+          {fmtMw(lead.counts_by_group['negative (published after target)'])} forecasts published after their
+          hour: never used
         </Check>
         <Check ok={Math.abs(overForecast) < 5}>
           latest forecasts averaged {overForecast}% {overForecast >= 0 ? 'above' : 'below'} actual

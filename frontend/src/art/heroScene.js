@@ -103,7 +103,14 @@ export function heroScene(t) {
     // a point `along` the blade and `side` across it
     const at = (along, side) =>
       project(hub[0] + dx * along - dy * side, hub[1] + dy * along + dx * side, hub[2])
-    blades += poly([at(0.16, 0.08), at(0.9, 0.2), at(2.9, 0.02), at(0.9, -0.07), at(0.16, -0.06), at(0.16, 0.08)])
+    blades += poly([
+      at(0.16, 0.08),
+      at(0.9, 0.2),
+      at(2.9, 0.02),
+      at(0.9, -0.07),
+      at(0.16, -0.06),
+      at(0.16, 0.08),
+    ])
     blades += poly([at(0.16, 0), at(2.9, 0)])
   }
 
@@ -121,7 +128,7 @@ export function heroScene(t) {
     wind += poly(points)
   }
 
-  const degrees = (((yaw * 180) / Math.PI) % 360 + 360) % 360
+  const degrees = ((((yaw * 180) / Math.PI) % 360) + 360) % 360
   return {
     terrain,
     tower,

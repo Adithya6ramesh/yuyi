@@ -62,7 +62,7 @@ def summary(comparison):
     lean = error.mean()
     # ddof=0 ("divide by n") so that overall_miss^2 = lean^2 + wobble^2 exactly.
     wobble = error.std(ddof=0)
-    overall = np.sqrt((error ** 2).mean())
+    overall = np.sqrt((error**2).mean())
 
     shortfall = rows.loc[error.idxmin()]
     overshoot = rows.loc[error.idxmax()]
@@ -79,7 +79,7 @@ def summary(comparison):
         "pct_hours_too_high": float((error < 0).mean() * 100),
         "wobble_mw": float(wobble),
         "overall_miss_mw": float(overall),
-        "lean_share_pct": float(lean ** 2 / overall ** 2 * 100) if overall else 0.0,
+        "lean_share_pct": float(lean**2 / overall**2 * 100) if overall else 0.0,
         "average_lead_time_h": float(rows["lead_time_h"].mean()),
     }
 
@@ -92,22 +92,25 @@ def horizon_curve(actuals, forecasts, hours_ahead=SLIDER_HOURS):
     rows = []
     for h in hours_ahead:
         s = summary(build_comparison(actuals, forecasts, h))
-        rows.append({
-            "hours_ahead": h,
-            "hours_counted": s["hours_counted"],
-            "average_miss_mw": s["average_miss_mw"],
-            "bad_hour_miss_mw": s["bad_hour_miss_mw"],
-            "lean_mw": s["lean_mw"],
-            "wobble_mw": s["wobble_mw"],
-            "lean_share_pct": s["lean_share_pct"],
-            "average_lead_time_h": s["average_lead_time_h"],
-        })
+        rows.append(
+            {
+                "hours_ahead": h,
+                "hours_counted": s["hours_counted"],
+                "average_miss_mw": s["average_miss_mw"],
+                "bad_hour_miss_mw": s["bad_hour_miss_mw"],
+                "lean_mw": s["lean_mw"],
+                "wobble_mw": s["wobble_mw"],
+                "lean_share_pct": s["lean_share_pct"],
+                "average_lead_time_h": s["average_lead_time_h"],
+            }
+        )
     return pd.DataFrame(rows)
 
 
 # ---------------------------------------------------------------------------
 # Wind levels - always decided from the FORECAST, never the actual
 # ---------------------------------------------------------------------------
+
 
 def wind_level_thresholds(forecast_mw):
     """
@@ -130,8 +133,11 @@ def assign_wind_level(forecast_mw, thresholds):
     forecast = pd.Series(forecast_mw, dtype=float).reset_index(drop=True)
     # np.select picks the first matching label; it also copes when both split points
     # are equal (then "medium" is simply empty).
-    labels = np.select([forecast < low_to_medium, forecast < medium_to_high, forecast.notna()],
-                       WIND_LEVELS, default=None)
+    labels = np.select(
+        [forecast < low_to_medium, forecast < medium_to_high, forecast.notna()],
+        WIND_LEVELS,
+        default=None,
+    )
     return pd.Series(pd.Categorical(labels, categories=WIND_LEVELS))
 
 
@@ -139,8 +145,15 @@ def assign_wind_level(forecast_mw, thresholds):
 # Breakdowns
 # ---------------------------------------------------------------------------
 
-BREAKDOWN_COLUMNS = ["hours_counted", "average_miss_mw", "typical_miss_mw", "bad_hour_miss_mw",
-                     "lean_mw", "pct_hours_too_high", "wobble_mw"]
+BREAKDOWN_COLUMNS = [
+    "hours_counted",
+    "average_miss_mw",
+    "typical_miss_mw",
+    "bad_hour_miss_mw",
+    "lean_mw",
+    "pct_hours_too_high",
+    "wobble_mw",
+]
 
 
 def _table_by(rows, groups):

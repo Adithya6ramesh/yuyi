@@ -29,13 +29,15 @@ def forecast_rows(rows):
 
 def versions_for_target():
     """Five forecasts for 14 Jan 12:00, published at different times."""
-    return forecast_rows([
-        (TARGET, "2026-01-13T02:30:00Z", 100),
-        (TARGET, "2026-01-13T11:30:00Z", 200),
-        (TARGET, "2026-01-13T15:30:00Z", 300),
-        (TARGET, "2026-01-14T09:30:00Z", 400),
-        (TARGET, "2026-01-14T15:30:00Z", 999),  # published AFTER the target hour
-    ])
+    return forecast_rows(
+        [
+            (TARGET, "2026-01-13T02:30:00Z", 100),
+            (TARGET, "2026-01-13T11:30:00Z", 200),
+            (TARGET, "2026-01-13T15:30:00Z", 300),
+            (TARGET, "2026-01-14T09:30:00Z", 400),
+            (TARGET, "2026-01-14T15:30:00Z", 999),  # published AFTER the target hour
+        ]
+    )
 
 
 def pick(forecasts, hours_ahead):
@@ -46,6 +48,7 @@ def pick(forecasts, hours_ahead):
 
 # ---------- picks the newest forecast published before the deadline ----------
 
+
 def test_picks_newest_forecast_before_deadline():
     # H = 24 -> deadline 13 Jan 12:00 -> newest at or before it is 11:30 (200 MW)
     row = pick(versions_for_target(), 24)
@@ -55,6 +58,7 @@ def test_picks_newest_forecast_before_deadline():
 
 
 # ---------- NEVER picks a forecast published after the deadline ----------
+
 
 def test_never_picks_forecast_published_after_deadline():
     forecasts = versions_for_target()
@@ -79,17 +83,21 @@ def test_never_cheats_on_real_data():
 
 # ---------- a forecast published EXACTLY at the deadline is allowed ----------
 
+
 def test_forecast_exactly_at_deadline_is_allowed():
-    forecasts = forecast_rows([
-        (TARGET, "2026-01-13T10:00:00Z", 100),
-        (TARGET, "2026-01-13T12:00:00Z", 200),  # exactly T - 24h
-    ])
+    forecasts = forecast_rows(
+        [
+            (TARGET, "2026-01-13T10:00:00Z", 100),
+            (TARGET, "2026-01-13T12:00:00Z", 200),  # exactly T - 24h
+        ]
+    )
     row = pick(forecasts, 24)
     assert row["forecast_mw"] == 200
     assert row["lead_time_h"] == 24
 
 
 # ---------- returns empty (not a guess) when no forecast exists ----------
+
 
 def test_empty_when_no_forecast_qualifies():
     # Every forecast was published less than 48h before the target.
@@ -100,13 +108,17 @@ def test_empty_when_no_forecast_qualifies():
 
 
 def test_comparison_keeps_empty_hours_and_counts_them():
-    actuals = pd.DataFrame({
-        "start_time": pd.to_datetime(["2026-01-14T11:00:00Z", "2026-01-14T11:30:00Z",
-                                      "2026-01-14T12:00:00Z"], utc=True),
-        "generation_mw": [500, 550, 600],
-    })
-    table = build_comparison(actuals, versions_for_target(), 24,
-                             start="2026-01-14 11:00", end="2026-01-14 13:00")
+    actuals = pd.DataFrame(
+        {
+            "start_time": pd.to_datetime(
+                ["2026-01-14T11:00:00Z", "2026-01-14T11:30:00Z", "2026-01-14T12:00:00Z"], utc=True
+            ),
+            "generation_mw": [500, 550, 600],
+        }
+    )
+    table = build_comparison(
+        actuals, versions_for_target(), 24, start="2026-01-14 11:00", end="2026-01-14 13:00"
+    )
     # Two on-the-hour times (11:00, 12:00); the 11:30 actual is left out.
     assert list(table["start_time"].dt.hour) == [11, 12]
     # 11:00 has no forecasts at all -> kept, but empty.
@@ -117,6 +129,7 @@ def test_comparison_keeps_empty_hours_and_counts_them():
 
 
 # ---------- larger H never picks a NEWER forecast than smaller H ----------
+
 
 def test_larger_horizon_never_picks_newer_forecast():
     forecasts = versions_for_target()
@@ -131,6 +144,7 @@ def test_larger_horizon_never_picks_newer_forecast():
 
 
 # ---------- the fixed-deadline mode uses ONE deadline for the whole day ----------
+
 
 def test_fixed_deadline_same_for_every_hour():
     # A forecast published 13 Jan 09:30 and another at 10:30, both covering all of 14 Jan.

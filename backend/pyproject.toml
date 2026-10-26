@@ -1,0 +1,17 @@
+# Settings for ruff, the backend's linter (finds likely mistakes) and formatter
+# (lays code out in one consistent style).
+#   Check:   .venv\Scripts\python.exe -m ruff check .
+#   Format:  .venv\Scripts\python.exe -m ruff format .
+# (pytest's settings stay in pytest.ini.)
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# E/W: style errors, F: real mistakes (unused imports, undefined names),
+# I: import order, B: common bug patterns, UP: modern Python syntax
+select = ["E", "W", "F", "I", "B", "UP"]
+# UP042 would turn our `str, Enum` choices into StrEnum, which changes how they print;
+# not worth a behaviour change.
+ignore = ["UP042"]

@@ -64,16 +64,22 @@ def clean_actuals(raw):
     Returns (clean table, small dict of numbers for the quality report).
     """
     wind = raw[raw["fuelType"] == "WIND"]  # the download asks for wind only; double-check
-    table = pd.DataFrame({
-        "start_time": to_utc(wind["startTime"]),
-        # errors="coerce": anything that isn't a number becomes empty, so the
-        # quality check can find it instead of the script crashing.
-        "generation_mw": pd.to_numeric(wind["generation"], errors="coerce"),
-    })
+    table = pd.DataFrame(
+        {
+            "start_time": to_utc(wind["startTime"]),
+            # errors="coerce": anything that isn't a number becomes empty, so the
+            # quality check can find it instead of the script crashing.
+            "generation_mw": pd.to_numeric(wind["generation"], errors="coerce"),
+        }
+    )
     table, removed = remove_duplicates(table)
     table = table.sort_values("start_time").reset_index(drop=True)
-    stats = {"raw_rows": len(raw), "non_wind_rows_dropped": len(raw) - len(wind),
-             "duplicates_removed": removed, "clean_rows": len(table)}
+    stats = {
+        "raw_rows": len(raw),
+        "non_wind_rows_dropped": len(raw) - len(wind),
+        "duplicates_removed": removed,
+        "clean_rows": len(table),
+    }
     return table, stats
 
 
@@ -82,11 +88,13 @@ def clean_forecasts(raw):
     Raw WINDFOR rows -> table with columns: start_time, publish_time, generation_mw.
     ALL versions are kept: the same start_time appears once per forecast that covered it.
     """
-    table = pd.DataFrame({
-        "start_time": to_utc(raw["startTime"]),
-        "publish_time": to_utc(raw["publishTime"]),
-        "generation_mw": pd.to_numeric(raw["generation"], errors="coerce"),
-    })
+    table = pd.DataFrame(
+        {
+            "start_time": to_utc(raw["startTime"]),
+            "publish_time": to_utc(raw["publishTime"]),
+            "generation_mw": pd.to_numeric(raw["generation"], errors="coerce"),
+        }
+    )
     table, removed = remove_duplicates(table)
     table = table.sort_values(["start_time", "publish_time"]).reset_index(drop=True)
     stats = {"raw_rows": len(raw), "duplicates_removed": removed, "clean_rows": len(table)}

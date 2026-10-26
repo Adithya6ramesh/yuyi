@@ -45,7 +45,9 @@
   min-height: 44px;
   text-decoration: none;
   color: var(--muted);
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 .sidebar__nav a:hover {
   background: var(--bg-hover);
@@ -210,8 +212,12 @@
   margin-top: 12px;
   border: 1px solid var(--line-strong);
 }
-.toggle--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.toggle--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.toggle--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.toggle--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
 .toggle__button {
   border: 0;
   padding: 8px 6px;
@@ -225,7 +231,9 @@
   align-items: center;
   justify-content: center;
   gap: 1px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 .toggle__button:hover {
   color: var(--text);
@@ -373,8 +381,12 @@ input[type='range'] {
   flex-wrap: wrap;
   gap: 18px;
 }
-.legend--actual { color: var(--accent); }
-.legend--forecast { color: var(--forecast); }
+.legend--actual {
+  color: var(--accent);
+}
+.legend--forecast {
+  color: var(--forecast);
+}
 .series-chart {
   display: block;
   width: 100%;
@@ -397,9 +409,15 @@ input[type='range'] {
 .chart-details--hint {
   color: var(--muted-2);
 }
-.chart-details__actual { color: var(--accent); }
-.chart-details__forecast { color: var(--forecast); }
-.chart-details__short { color: var(--shortfall); }
+.chart-details__actual {
+  color: var(--accent);
+}
+.chart-details__forecast {
+  color: var(--forecast);
+}
+.chart-details__short {
+  color: var(--shortfall);
+}
 
 /* --- plain English ------------------------------------------------------- */
 
@@ -493,9 +511,6 @@ input[type='range'] {
   line-height: 1.8;
   white-space: pre;
   color: var(--muted);
-  display: block;
-  overflow-x: auto;
-  max-width: 100%;
 }
 .ascii-table th,
 .ascii-table td {
@@ -513,8 +528,12 @@ input[type='range'] {
   text-align: right;
   color: var(--muted-2);
 }
-.ascii-table__lean { color: var(--forecast); }
-.ascii-table__wobble { color: var(--muted); }
+.ascii-table__lean {
+  color: var(--forecast);
+}
+.ascii-table__wobble {
+  color: var(--muted);
+}
 .ascii-table tr.is-current,
 .ascii-table tr.is-current th,
 .ascii-table tr.is-current span {
@@ -549,16 +568,17 @@ input[type='range'] {
   color-scheme: dark;
 }
 .terminal {
-  margin: 16px 0 0;
+  margin: 0;
   font-size: 13px;
   line-height: 1.8;
   color: var(--muted);
   white-space: pre;
-  overflow-x: auto;
 }
+/* boxes that scroll sideways on narrow screens (see components/ScrollBox.jsx) */
 .table-scroll {
-  margin-top: 18px;
+  margin-top: 16px;
   overflow-x: auto;
+  max-width: 100%;
 }
 .hours-table {
   border-collapse: collapse;
@@ -587,10 +607,18 @@ input[type='range'] {
 .hours-table tbody th {
   color: var(--muted-2);
 }
-.hours-table__forecast { color: var(--forecast); }
-.hours-table__actual { color: var(--accent); }
-.hours-table .is-short { color: var(--shortfall); }
-.hours-table .is-ok { color: var(--accent); }
+.hours-table__forecast {
+  color: var(--forecast);
+}
+.hours-table__actual {
+  color: var(--accent);
+}
+.hours-table .is-short {
+  color: var(--shortfall);
+}
+.hours-table .is-ok {
+  color: var(--accent);
+}
 
 /* the back-test */
 .toggle--method {
@@ -664,5 +692,9 @@ input[type='range'] {
   margin: 0 0 0 auto;
   color: var(--muted-2);
 }
-.check-ok { color: var(--accent); }
-.check-warn { color: var(--forecast); }
+.check-ok {
+  color: var(--accent);
+}
+.check-warn {
+  color: var(--forecast);
+}

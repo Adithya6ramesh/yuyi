@@ -27,7 +27,7 @@ from app.core.metrics import WIND_LEVELS, assign_wind_level, complete_rows, wind
 
 CONFIDENCE_LEVELS = (80, 90, 95)
 BACKTEST_SPLIT = "2026-01-25"  # learn from hours BEFORE this, test on hours from it on
-BACKTEST_END = "2026-02-01"    # ...up to (not including) this
+BACKTEST_END = "2026-02-01"  # ...up to (not including) this
 
 
 def error_band(errors, confidence):
@@ -40,13 +40,19 @@ def error_band(errors, confidence):
     errors = pd.Series(errors).dropna()
     lower = float(np.percentile(errors, tail))
     upper = float(np.percentile(errors, 100 - tail))
-    return {"confidence": confidence, "lower_mw": lower, "upper_mw": upper,
-            "cushion_mw": -lower, "hours_learned_from": int(len(errors))}
+    return {
+        "confidence": confidence,
+        "lower_mw": lower,
+        "upper_mw": upper,
+        "cushion_mw": -lower,
+        "hours_learned_from": int(len(errors)),
+    }
 
 
 # ---------------------------------------------------------------------------
 # Learning the cushion
 # ---------------------------------------------------------------------------
+
 
 def learn_one_size(comparison, confidence):
     """One band from all the hours given."""
@@ -79,6 +85,7 @@ def learn_per_group(comparison, confidence, thresholds=None):
 # ---------------------------------------------------------------------------
 # Applying the cushion to (new) hours
 # ---------------------------------------------------------------------------
+
 
 def apply_one_size(comparison, band):
     """Add range_low_mw / range_high_mw columns using one band for every hour."""
@@ -114,8 +121,10 @@ def coverage(applied):
     actual = applied["actual_mw"]
     return {
         "hours": int(len(applied)),
-        "pct_inside": float(((actual >= applied["range_low_mw"])
-                             & (actual <= applied["range_high_mw"])).mean() * 100),
+        "pct_inside": float(
+            ((actual >= applied["range_low_mw"]) & (actual <= applied["range_high_mw"])).mean()
+            * 100
+        ),
         "pct_below_range": float((actual < applied["range_low_mw"]).mean() * 100),
         "pct_above_range": float((actual > applied["range_high_mw"]).mean() * 100),
         "pct_below_raw": float((actual < applied["forecast_mw"]).mean() * 100),
@@ -126,6 +135,7 @@ def coverage(applied):
 # ---------------------------------------------------------------------------
 # Back-test: learn on the past, test on the (unseen) future
 # ---------------------------------------------------------------------------
+
 
 def split_train_test(comparison, split=BACKTEST_SPLIT, end=BACKTEST_END):
     """Learning hours: before `split`. Test hours: from `split` up to `end`."""

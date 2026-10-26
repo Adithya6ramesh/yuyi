@@ -1,5 +1,3 @@
-import { useEffect, useRef, useState } from 'react'
-
 /*
   A ticking clock for the animations: returns the number of seconds the animation has
   been running, updated `fps` times a second.
@@ -13,6 +11,9 @@ import { useEffect, useRef, useState } from 'react'
     - the animation is scrolled out of view (saves battery; nothing pops in or fades).
   When it starts again it carries on from where it stopped, with no jump.
 */
+
+import { useEffect, useRef, useState } from 'react'
+
 export function useAnimationClock(fps = 20) {
   const ref = useRef(null)
   const [seconds, setSeconds] = useState(0)

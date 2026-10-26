@@ -1,0 +1,25 @@
+# Line endings: store text files with LF (the Linux style) in the repository, so files
+# behave the same on Windows, in Docker and in CI, and diffs don't fill with invisible
+# line-ending changes. Git converts on checkout as each computer's settings say,
+# except for the files forced to LF below.
+* text=auto eol=lf
+
+*.sh         text eol=lf
+*.py         text eol=lf
+*.js         text eol=lf
+*.jsx        text eol=lf
+*.css        text eol=lf
+*.md         text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.json       text eol=lf
+*.html       text eol=lf
+*.toml       text eol=lf
+Dockerfile   text eol=lf
+nginx.conf   text eol=lf
+
+# Binary files: never touch them.
+*.parquet    binary
+*.png        binary
+*.jpg        binary
+*.woff2      binary

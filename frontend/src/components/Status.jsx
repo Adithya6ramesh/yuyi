@@ -3,7 +3,10 @@
 export function Loading({ label = 'loading' }) {
   return (
     <p className="status-line" role="status">
-      {label} <span className="blink" aria-hidden="true">▍</span>
+      {label}{' '}
+      <span className="blink" aria-hidden="true">
+        ▍
+      </span>
     </p>
   )
 }

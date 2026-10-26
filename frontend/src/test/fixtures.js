@@ -107,7 +107,12 @@ export const breakdowns = {
     breakdownRow(g, 1700 + i * 50),
   ),
   wind_level: [breakdownRow('high', 3220), breakdownRow('low', 1375), breakdownRow('medium', 1556)],
-  wind_level_thresholds: { low_to_medium_mw: 10457, medium_to_high_mw: 17021, grouped_by: 'forecast', rule: '' },
+  wind_level_thresholds: {
+    low_to_medium_mw: 10457,
+    medium_to_high_mw: 17021,
+    grouped_by: 'forecast',
+    rule: '',
+  },
 }
 
 export const backtest = {
@@ -146,7 +151,13 @@ export const decisionDay = {
 }
 
 export const quality = {
-  actuals: { found_half_hours: 1728, expected_half_hours: 1728, missing_half_hours: [], duplicates_removed: 0, clean_rows: 1728 },
+  actuals: {
+    found_half_hours: 1728,
+    expected_half_hours: 1728,
+    missing_half_hours: [],
+    duplicates_removed: 0,
+    clean_rows: 1728,
+  },
   forecasts: {
     duplicates_removed: 0,
     clean_rows: 19272,

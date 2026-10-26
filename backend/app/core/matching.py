@@ -36,6 +36,7 @@ ONE_HOUR = pd.Timedelta(hours=1)
 # Small helpers
 # ---------------------------------------------------------------------------
 
+
 def _utc(value):
     """Turn a date/time (text, Timestamp, datetime) into a UTC Timestamp."""
     stamp = pd.Timestamp(value)
@@ -63,22 +64,28 @@ def _newest_forecast_before(forecasts, targets):
     time, never forward; by="start_time" means it only looks at forecasts for the
     same hour. If nothing qualifies, the forecast columns are left empty.
     """
-    left = pd.DataFrame({
-        "start_time": _utc_column(targets["start_time"]),
-        "deadline": _utc_column(targets["deadline"]),
-    }).sort_values("deadline")  # merge_asof needs both sides sorted by time
+    left = pd.DataFrame(
+        {
+            "start_time": _utc_column(targets["start_time"]),
+            "deadline": _utc_column(targets["deadline"]),
+        }
+    ).sort_values("deadline")  # merge_asof needs both sides sorted by time
 
-    right = pd.DataFrame({
-        "start_time": _utc_column(forecasts["start_time"]),
-        "publish_time": _utc_column(forecasts["publish_time"]),
-        "forecast_mw": forecasts["generation_mw"].to_numpy(),
-    }).sort_values("publish_time")
+    right = pd.DataFrame(
+        {
+            "start_time": _utc_column(forecasts["start_time"]),
+            "publish_time": _utc_column(forecasts["publish_time"]),
+            "forecast_mw": forecasts["generation_mw"].to_numpy(),
+        }
+    ).sort_values("publish_time")
 
     chosen = pd.merge_asof(
-        left, right,
-        left_on="deadline", right_on="publish_time",
+        left,
+        right,
+        left_on="deadline",
+        right_on="publish_time",
         by="start_time",
-        direction="backward",      # only publish_time <= deadline
+        direction="backward",  # only publish_time <= deadline
         allow_exact_matches=True,  # published EXACTLY at the deadline is allowed
     )
 
@@ -103,6 +110,7 @@ def _january_hours(start=None, end=None):
 # Mode 1: "H hours ahead"
 # ---------------------------------------------------------------------------
 
+
 def select_forecasts(forecasts, horizon_hours, target_times=None):
     """
     For each target hour, the newest forecast published at least `horizon_hours`
@@ -125,10 +133,12 @@ def select_forecasts(forecasts, horizon_hours, target_times=None):
         target_times = times[times.dt.minute == 0].drop_duplicates()
     target_times = _utc_column(pd.Series(target_times))
 
-    targets = pd.DataFrame({
-        "start_time": target_times,
-        "deadline": target_times - pd.Timedelta(hours=horizon_hours),
-    })
+    targets = pd.DataFrame(
+        {
+            "start_time": target_times,
+            "deadline": target_times - pd.Timedelta(hours=horizon_hours),
+        }
+    )
     chosen = _newest_forecast_before(forecasts, targets)
     return chosen[["start_time", "forecast_mw", "publish_time", "lead_time_h"]]
 
@@ -149,16 +159,19 @@ def build_comparison(actuals, forecasts, horizon_hours, start=None, end=None):
     hours = _january_hours(start, end)
     chosen = select_forecasts(forecasts, horizon_hours, target_times=hours)
 
-    actual = pd.DataFrame({
-        "start_time": _utc_column(actuals["start_time"]),
-        "actual_mw": actuals["generation_mw"].to_numpy(),
-    })
+    actual = pd.DataFrame(
+        {
+            "start_time": _utc_column(actuals["start_time"]),
+            "actual_mw": actuals["generation_mw"].to_numpy(),
+        }
+    )
     # how="left": keep every hour from 'chosen'. Half-hour actuals (:30) have no
     # matching row there, so they simply drop out - we compare on the hour only.
     table = chosen.merge(actual, on="start_time", how="left")
     table["error_mw"] = table["actual_mw"] - table["forecast_mw"]
-    return table[["start_time", "actual_mw", "forecast_mw", "publish_time",
-                  "lead_time_h", "error_mw"]]
+    return table[
+        ["start_time", "actual_mw", "forecast_mw", "publish_time", "lead_time_h", "error_mw"]
+    ]
 
 
 def count_missing(comparison):
@@ -174,6 +187,7 @@ def count_missing(comparison):
 # Mode 2: "Decision Day" (one fixed deadline the day before)
 # ---------------------------------------------------------------------------
 
+
 def decision_deadline(delivery_date, deadline_time=DECISION_DEADLINE_TIME):
     """The deadline for a delivery day: deadline_time (UTC) on the day before."""
     if isinstance(delivery_date, str):
@@ -184,8 +198,7 @@ def decision_deadline(delivery_date, deadline_time=DECISION_DEADLINE_TIME):
     return _utc(datetime.combine(day_before, deadline_time))
 
 
-def select_forecasts_at_deadline(forecasts, delivery_date,
-                                 deadline_time=DECISION_DEADLINE_TIME):
+def select_forecasts_at_deadline(forecasts, delivery_date, deadline_time=DECISION_DEADLINE_TIME):
     """
     For each of the 24 hours of `delivery_date`, the newest forecast published at
     or before ONE fixed deadline: `deadline_time` on the day before.
@@ -210,9 +223,13 @@ def select_forecasts_at_deadline(forecasts, delivery_date,
     return chosen[["start_time", "forecast_mw", "publish_time", "lead_time_h", "deadline"]]
 
 
-def build_decision_day_comparison(actuals, forecasts, first_delivery_day="2026-01-02",
-                                  last_delivery_day="2026-02-01",
-                                  deadline_time=DECISION_DEADLINE_TIME):
+def build_decision_day_comparison(
+    actuals,
+    forecasts,
+    first_delivery_day="2026-01-02",
+    last_delivery_day="2026-02-01",
+    deadline_time=DECISION_DEADLINE_TIME,
+):
     """
     Decision Day mode for many delivery days, side by side with the actuals.
     Default: decisions made 1-31 Jan -> delivery days 2 Jan - 1 Feb.
@@ -223,12 +240,24 @@ def build_decision_day_comparison(actuals, forecasts, first_delivery_day="2026-0
     days = pd.date_range(first_delivery_day, last_delivery_day, freq="D")
     chosen = pd.concat(
         [select_forecasts_at_deadline(forecasts, day.date(), deadline_time) for day in days],
-        ignore_index=True)
-    actual = pd.DataFrame({
-        "start_time": _utc_column(actuals["start_time"]),
-        "actual_mw": actuals["generation_mw"].to_numpy(),
-    })
+        ignore_index=True,
+    )
+    actual = pd.DataFrame(
+        {
+            "start_time": _utc_column(actuals["start_time"]),
+            "actual_mw": actuals["generation_mw"].to_numpy(),
+        }
+    )
     table = chosen.merge(actual, on="start_time", how="left")
     table["error_mw"] = table["actual_mw"] - table["forecast_mw"]
-    return table[["start_time", "actual_mw", "forecast_mw", "publish_time",
-                  "lead_time_h", "error_mw", "deadline"]]
+    return table[
+        [
+            "start_time",
+            "actual_mw",
+            "forecast_mw",
+            "publish_time",
+            "lead_time_h",
+            "error_mw",
+            "deadline",
+        ]
+    ]

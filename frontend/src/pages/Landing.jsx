@@ -16,13 +16,14 @@ import { asciiBar, fmtAbout, fmtMw } from '../art/ascii.js'
 import { AsciiTurbineArt, FlowFieldBand, HeroScene, Ticker } from '../components/Animations.jsx'
 import MethodFlow from '../components/MethodFlow.jsx'
 import SeriesChart from '../components/SeriesChart.jsx'
+import SkipLink from '../components/SkipLink.jsx'
 import { ErrorNote, Loading } from '../components/Status.jsx'
 import { addDays, dateSpan, dayMonth, dayMonthTime, daysBetween, monthYear, yearMonth } from '../dates.js'
 import { useAnimationClock } from '../hooks/useAnimationClock.js'
 import { useApi } from '../hooks/useApi.js'
 import './landing.css'
 
-export const TAGLINE = 'Don’t guess the gust, buy what you must.'
+const TAGLINE = 'Don’t guess the gust, buy what you must.'
 const WALKTHROUGH_EMAIL = 'mailto:hello@example.com?subject=Windhedge%20walkthrough' // placeholder
 const EXAMPLE_HOUR = '10:00' // the hour used in the "one hour, many forecasts" example
 
@@ -53,7 +54,9 @@ async function loadConvergence(config, day) {
   const seen = new Set()
   const versions = answers
     .map((answer) => answer.rows.find((row) => row.time === target))
-    .filter((row) => row && row.forecast_mw != null && !seen.has(row.publish_time) && seen.add(row.publish_time))
+    .filter(
+      (row) => row && row.forecast_mw != null && !seen.has(row.publish_time) && seen.add(row.publish_time),
+    )
   return { target, versions }
 }
 
@@ -92,7 +95,8 @@ function convergenceText({ target, versions }) {
     rule,
     'published      ahead    forecast',
     ...versions.map(
-      (v) => `${dayMonthTime(v.publish_time)}   ${`${v.lead_time_h}h`.padStart(5, ' ')}   ${mw(v.forecast_mw)}  ${bar(v.forecast_mw)}`,
+      (v) =>
+        `${dayMonthTime(v.publish_time)}   ${`${v.lead_time_h}h`.padStart(5, ' ')}   ${mw(v.forecast_mw)}  ${bar(v.forecast_mw)}`,
     ),
     rule,
     `actual                 ${mw(actual)}  ${bar(actual)}`,
@@ -139,9 +143,7 @@ function Convergence({ convergence }) {
   const { target, versions } = convergence.data
   const description =
     `Real example: forecasts for ${dayMonthTime(target)} UTC. ` +
-    versions
-      .map((v) => `Published ${dayMonthTime(v.publish_time)}: ${fmtMw(v.forecast_mw)} MW.`)
-      .join(' ') +
+    versions.map((v) => `Published ${dayMonthTime(v.publish_time)}: ${fmtMw(v.forecast_mw)} MW.`).join(' ') +
     ` Actual: ${fmtMw(versions[0]?.actual_mw)} MW.`
   return (
     <>
@@ -236,20 +238,30 @@ export default function Landing() {
   const tail = cfg ? (100 - cfg.default_confidence) / 2 : null
   const pct = (p) => `p${String(p).padStart(2, '0')}`
   const percentiles = tail != null ? `${pct(tail)} / ${pct(100 - tail)}` : 'percentiles'
-  const cushionFormula = tail != null ? `cushion = −${pct(tail)}(miss)` : 'cushion = a low percentile of the miss'
+  const cushionFormula =
+    tail != null ? `cushion = −${pct(tail)}(miss)` : 'cushion = a low percentile of the miss'
 
   const tickerText = useMemo(
     () =>
       [
-        'FUELHH', 'fuelType = WIND', 'startTime', 'generation (MW)', 'WINDFOR', 'publishTime',
-        'latest forecast before T − H', 'miss = actual − forecast', percentiles,
-        'back-test on unseen days', 'day-ahead market',
+        'FUELHH',
+        'fuelType = WIND',
+        'startTime',
+        'generation (MW)',
+        'WINDFOR',
+        'publishTime',
+        'latest forecast before T − H',
+        'miss = actual − forecast',
+        percentiles,
+        'back-test on unseen days',
+        'day-ahead market',
       ].join(' ◆ ') + ' ◆',
     [percentiles],
   )
 
   return (
     <div className="landing">
+      <SkipLink to="main-content" />
       {/* TOP BAR */}
       <header className="topbar">
         <nav className="topbar__nav" aria-label="Main">
@@ -268,7 +280,7 @@ export default function Landing() {
         </nav>
       </header>
 
-      <main>
+      <main id="main-content">
         {/* HERO */}
         <section id="top" className="hero wrap">
           <div className="hero__text">
@@ -277,8 +289,8 @@ export default function Landing() {
               Tomorrow’s wind, <em>priced&nbsp;in</em> today.
             </h1>
             <p className="hero__lede">
-              Windhedge shows your trading desk the wind forecast that existed when the order had to go
-              in, how wrong that forecast has been, and how much margin to plan for.
+              Windhedge shows your trading desk the wind forecast that existed when the order had to go in,
+              how wrong that forecast has been, and how much margin to plan for.
             </p>
             <div className="actions">
               <Link to="/desk" className="btn-solid">
@@ -344,8 +356,8 @@ export default function Landing() {
               <figcaption className="mono-label">One hour, many forecasts · real example</figcaption>
               <Convergence convergence={data.convergence} />
               <p className="problem__note">
-                ↳ each new forecast replaces the last. Only the ones out before the deadline count, and
-                the order can’t wait.
+                ↳ each new forecast replaces the last. Only the ones out before the deadline count, and the
+                order can’t wait.
               </p>
             </figure>
           </div>
@@ -359,18 +371,16 @@ export default function Landing() {
           <h2 className="section__title section__title--narrow">
             Three moves from raw data to a <em>confident</em> order.
           </h2>
-          <MethodFlow
-            cfg={cfg}
-            quality={quality.data}
-            summary={summary.data}
-            backtest={data.backtest.data}
-          />
+          <MethodFlow cfg={cfg} quality={quality.data} summary={summary.data} backtest={data.backtest.data} />
           <ol className="steps">
             <li>
               <span className="steps__number">STEP 01</span>
               <div className="steps__text">
                 <h3>Collect the official data</h3>
-                <p>Actual wind output and every published forecast, downloaded once, cleaned and checked for gaps.</p>
+                <p>
+                  Actual wind output and every published forecast, downloaded once, cleaned and checked for
+                  gaps.
+                </p>
               </div>
               <code>GET /datasets/FUELHH/stream · fuelType=WIND</code>
             </li>
@@ -378,7 +388,10 @@ export default function Landing() {
               <span className="steps__number">STEP 02</span>
               <div className="steps__text">
                 <h3>Pick the forecast you’d really have had</h3>
-                <p>For each hour, the latest forecast published before your deadline. Anything later is ignored.</p>
+                <p>
+                  For each hour, the latest forecast published before your deadline. Anything later is
+                  ignored.
+                </p>
               </div>
               <code>forecast(T) = latest where publishTime ≤ T − H</code>
             </li>
@@ -386,7 +399,9 @@ export default function Landing() {
               <span className="steps__number">STEP 03</span>
               <div className="steps__text">
                 <h3>Measure, then plan a cushion</h3>
-                <p>Every miss is recorded. The bad hours become a safety margin, tested on a week it never saw.</p>
+                <p>
+                  Every miss is recorded. The bad hours become a safety margin, tested on a week it never saw.
+                </p>
               </div>
               <code>miss = actual − forecast · {cushionFormula}</code>
             </li>

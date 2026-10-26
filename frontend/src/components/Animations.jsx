@@ -23,13 +23,28 @@ export function HeroScene({ horizonHours }) {
       <span className="corner corner--bl" />
       <span className="corner corner--br" />
       <svg viewBox="0 0 840 620" aria-hidden="true">
-        <path d={scene.terrain} style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 0.8, strokeOpacity: 0.32 }} />
+        <path
+          d={scene.terrain}
+          style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 0.8, strokeOpacity: 0.32 }}
+        />
         <path
           d={scene.wind}
-          style={{ fill: 'none', stroke: 'var(--forecast)', strokeWidth: 1.6, strokeLinecap: 'round', strokeOpacity: 0.85 }}
+          style={{
+            fill: 'none',
+            stroke: 'var(--forecast)',
+            strokeWidth: 1.6,
+            strokeLinecap: 'round',
+            strokeOpacity: 0.85,
+          }}
         />
-        <path d={scene.tower} style={{ fill: 'none', stroke: 'var(--text)', strokeWidth: 1, strokeOpacity: 0.8 }} />
-        <path d={scene.blades} style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 1.4, strokeLinejoin: 'round' }} />
+        <path
+          d={scene.tower}
+          style={{ fill: 'none', stroke: 'var(--text)', strokeWidth: 1, strokeOpacity: 0.8 }}
+        />
+        <path
+          d={scene.blades}
+          style={{ fill: 'none', stroke: 'var(--accent)', strokeWidth: 1.4, strokeLinejoin: 'round' }}
+        />
       </svg>
       <div className="hero-scene__label hero-scene__label--top" aria-hidden="true">
         Wind field · model view

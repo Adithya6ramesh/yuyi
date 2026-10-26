@@ -44,8 +44,10 @@ def summarise(table):
 
 
 def print_row(label, s, note=""):
-    print(f"{label:>10} | {s['matched']:>7} | {s['missing']:>7} | {s['avg_miss']:>9.0f} | "
-          f"{s['avg_error']:>+10.0f} | {s['avg_lead']:>8.1f}  {note}")
+    print(
+        f"{label:>10} | {s['matched']:>7} | {s['missing']:>7} | {s['avg_miss']:>9.0f} | "
+        f"{s['avg_error']:>+10.0f} | {s['avg_lead']:>8.1f}  {note}"
+    )
 
 
 def main():
@@ -53,8 +55,10 @@ def main():
     forecasts = pd.read_parquet(FORECASTS_FILE)
 
     print("MODE 1: 'H hours ahead' - all 744 on-the-hour times in January 2026")
-    print(f"{'H (hours)':>10} | {'matched':>7} | {'missing':>7} | {'avg miss':>9} | "
-          f"{'avg error':>10} | {'avg lead':>8}")
+    print(
+        f"{'H (hours)':>10} | {'matched':>7} | {'missing':>7} | {'avg miss':>9} | "
+        f"{'avg error':>10} | {'avg lead':>8}"
+    )
     print("-" * 70)
 
     misses = []
@@ -66,15 +70,18 @@ def main():
     print_row(EXTRA_HORIZON, s, "<- outside slider range, gaps expected")
 
     print("\nDo misses grow as H grows (within the slider range)?")
-    worse = [(HORIZONS[i], HORIZONS[i + 1]) for i in range(len(misses) - 1)
-             if misses[i + 1] < misses[i]]
+    worse = [
+        (HORIZONS[i], HORIZONS[i + 1]) for i in range(len(misses) - 1) if misses[i + 1] < misses[i]
+    ]
     if not worse:
         print("  YES - every step further ahead has a bigger average miss.")
     else:
         print(f"  NOT ALWAYS - the miss got SMALLER between H = {worse}. Investigate!")
 
-    print(f"\nMODE 2: 'Decision Day' - deadline {DECISION_DEADLINE_TIME:%H:%M} UTC the day before,"
-          " delivery 2 Jan - 1 Feb")
+    print(
+        f"\nMODE 2: 'Decision Day' - deadline {DECISION_DEADLINE_TIME:%H:%M} UTC the day before,"
+        " delivery 2 Jan - 1 Feb"
+    )
     # Decisions on 1-31 Jan -> delivery days 2 Jan - 1 Feb.
     s = summarise(build_decision_day_comparison(actuals, forecasts))
     print_row("deadline", s, "(lead time varies 14.5h-37.5h across the day)")

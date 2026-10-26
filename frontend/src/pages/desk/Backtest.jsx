@@ -8,6 +8,7 @@
 import { useState } from 'react'
 import { getBacktest } from '../../api.js'
 import { fmtAbout } from '../../art/ascii.js'
+import ScrollBox from '../../components/ScrollBox.jsx'
 import { ErrorNote, Loading } from '../../components/Status.jsx'
 import { dateSpan } from '../../dates.js'
 import { useApi } from '../../hooks/useApi.js'
@@ -50,8 +51,8 @@ export default function Backtest({ query }) {
         </p>
         {r.experimental && (
           <p className="experimental">
-            [!!] Experimental: this cushion failed the back-test. Shown for comparison only; the desk uses
-            the one-size cushion.
+            [!!] Experimental: this cushion failed the back-test. Shown for comparison only; the desk uses the
+            one-size cushion.
           </p>
         )}
         <p className="sr-only">
@@ -61,13 +62,15 @@ export default function Backtest({ query }) {
         <pre className={`coverage${held ? '' : ' coverage--short'}`} aria-hidden="true">
           {coverageBar(r.actual_coverage_pct, r.target_pct)}
         </pre>
-        <pre className="terminal">
-          {[
-            dots('caught short') + `${Math.round(r.caught_short_pct)}% of hours (below the range)`,
-            dots('with no cushion') + `${Math.round(r.below_raw_forecast_pct)}% of hours caught short`,
-            dots('average cushion') + `${fmtAbout(r.average_cushion_mw)} MW`,
-          ].join('\n')}
-        </pre>
+        <ScrollBox label="Back-test details">
+          <pre className="terminal">
+            {[
+              dots('caught short') + `${Math.round(r.caught_short_pct)}% of hours (below the range)`,
+              dots('with no cushion') + `${Math.round(r.below_raw_forecast_pct)}% of hours caught short`,
+              dots('average cushion') + `${fmtAbout(r.average_cushion_mw)} MW`,
+            ].join('\n')}
+          </pre>
+        </ScrollBox>
         <p className={`verdict${held ? '' : ' verdict--short'}`}>→ {r.honest_verdict}</p>
       </>
     )

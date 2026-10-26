@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 /*
   Debounce: wait until a value has stopped changing for `delay` milliseconds before
   passing it on. While the user drags the slider the screen label updates at once, but
@@ -7,6 +5,9 @@ import { useEffect, useState } from 'react'
 
       const settled = useDebouncedValue(settings, 300)
 */
+
+import { useEffect, useState } from 'react'
+
 export function useDebouncedValue(value, delay = 300) {
   const [settled, setSettled] = useState(value)
   useEffect(() => {

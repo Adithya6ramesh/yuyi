@@ -16,7 +16,7 @@ them in place. between() hands out a copy, which is safe to change.
 
 import json
 from datetime import date, timedelta
-from functools import lru_cache
+from functools import cache
 
 import pandas as pd
 
@@ -74,6 +74,7 @@ def get(name):
 # Cached calculations, one per (mode, H) combination
 # ---------------------------------------------------------------------------
 
+
 def _key(mode, horizon):
     """Decision Day ignores H (its deadline is fixed), so all H share one cache entry."""
     return (mode, None) if mode == "decision_day" else (mode, int(horizon))
@@ -87,7 +88,7 @@ def comparison(mode, horizon):
     return _comparison(*_key(mode, horizon))
 
 
-@lru_cache(maxsize=None)
+@cache
 def _comparison(mode, horizon):
     actuals, forecasts = get("actuals"), get("forecasts")
     if mode == "decision_day":
@@ -102,7 +103,7 @@ def backtest(mode, horizon, confidence):
     return _backtest(*_key(mode, horizon), confidence)
 
 
-@lru_cache(maxsize=None)
+@cache
 def _backtest(mode, horizon, confidence):
     table = comparison(mode, horizon)
     result = back_test(table, confidence)
@@ -130,15 +131,18 @@ def horizon_curve(start, end):
     return _horizon_curve(start, end)
 
 
-@lru_cache(maxsize=None)
+@cache
 def _horizon_curve(start, end):
-    return [{"hours_ahead": h, **summary(between(comparison("horizon", h), start, end))}
-            for h in SLIDER_HOURS]
+    return [
+        {"hours_ahead": h, **summary(between(comparison("horizon", h), start, end))}
+        for h in SLIDER_HOURS
+    ]
 
 
 # ---------------------------------------------------------------------------
 # Small helpers
 # ---------------------------------------------------------------------------
+
 
 def between(table, start, end):
     """The rows whose hour falls on the dates start..end (both days included). A copy."""

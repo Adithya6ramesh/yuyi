@@ -23,14 +23,16 @@ def comparison(errors, forecast=1000, start="2026-01-14 00:00"):
     """A comparison table with the given errors (actual = forecast + error)."""
     times = pd.date_range(start, periods=len(errors), freq="h", tz="UTC")
     forecasts = [forecast] * len(errors) if not isinstance(forecast, list) else forecast
-    return pd.DataFrame({
-        "start_time": times,
-        "actual_mw": [f + e for f, e in zip(forecasts, errors)],
-        "forecast_mw": forecasts,
-        "publish_time": times - pd.Timedelta(hours=25),
-        "lead_time_h": [25.0] * len(errors),
-        "error_mw": errors,
-    })
+    return pd.DataFrame(
+        {
+            "start_time": times,
+            "actual_mw": [f + e for f, e in zip(forecasts, errors, strict=True)],
+            "forecast_mw": forecasts,
+            "publish_time": times - pd.Timedelta(hours=25),
+            "lead_time_h": [25.0] * len(errors),
+            "error_mw": errors,
+        }
+    )
 
 
 # Errors [-300, -100, 0, +100, +300], C = 80 -> percentiles 10 and 90.
@@ -67,8 +69,11 @@ def test_coverage_counts():
 
 def test_wider_confidence_gives_bigger_cushion():
     errors = list(range(-1000, 1001, 10))
-    assert (error_band(errors, 80)["cushion_mw"] < error_band(errors, 90)["cushion_mw"]
-            < error_band(errors, 95)["cushion_mw"])
+    assert (
+        error_band(errors, 80)["cushion_mw"]
+        < error_band(errors, 90)["cushion_mw"]
+        < error_band(errors, 95)["cushion_mw"]
+    )
 
 
 def test_per_group_cushion_uses_forecast_not_actual():
@@ -78,10 +83,12 @@ def test_per_group_cushion_uses_forecast_not_actual():
     because at decision time only the forecast is known.
     """
     low = comparison([-10, -20, -30, -40, -50, -60], forecast=1000)
-    medium = comparison([-100, -200, -300, -400, -500, -600], forecast=10000,
-                        start="2026-01-15 00:00")
-    high = comparison([-1000, -2000, -3000, -4000, -5000, -6000], forecast=20000,
-                      start="2026-01-16 00:00")
+    medium = comparison(
+        [-100, -200, -300, -400, -500, -600], forecast=10000, start="2026-01-15 00:00"
+    )
+    high = comparison(
+        [-1000, -2000, -3000, -4000, -5000, -6000], forecast=20000, start="2026-01-16 00:00"
+    )
     model = learn_per_group(pd.concat([low, medium, high], ignore_index=True), 80)
 
     new_hour = comparison([19000], forecast=1000, start="2026-01-20 00:00")  # actual 20,000
@@ -101,8 +108,9 @@ def test_empty_wind_level_falls_back_to_one_size():
 
 
 def test_thresholds_learned_from_forecasts_only():
-    table = comparison([-10, -20, -30, -40, -50, -60],
-                       forecast=[1000, 2000, 3000, 4000, 5000, 6000])
+    table = comparison(
+        [-10, -20, -30, -40, -50, -60], forecast=[1000, 2000, 3000, 4000, 5000, 6000]
+    )
     changed = table.copy()
     changed["actual_mw"] = changed["actual_mw"] * 10  # wildly different actuals
     assert learn_per_group(table, 80)["thresholds"] == learn_per_group(changed, 80)["thresholds"]
@@ -110,7 +118,7 @@ def test_thresholds_learned_from_forecasts_only():
 
 def test_back_test_learns_only_from_before_the_split():
     # Learning days: tiny errors. Test days: huge errors.
-    learn = comparison([-10, 10] * 24, start="2026-01-23 00:00")   # 23-24 Jan
+    learn = comparison([-10, 10] * 24, start="2026-01-23 00:00")  # 23-24 Jan
     test = comparison([-5000, 5000] * 24, start="2026-01-25 00:00")  # 25-26 Jan
     result = back_test(pd.concat([learn, test], ignore_index=True), 80)
     assert result["train_hours"] == 48

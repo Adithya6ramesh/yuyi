@@ -1,0 +1,81 @@
+# Automatic checks (GitHub Actions). On every push and pull request, GitHub runs these
+# three jobs on fresh Linux machines and shows a green tick or a red cross per commit.
+#   backend:  lint, format check and tests for the Python API
+#   frontend: lint, format check, tests and a production build of the React app
+#   docker:   builds both images, starts them, and checks the app answers on port 8080
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - name: Install packages
+        run: pip install -r requirements-dev.txt
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Format check (ruff)
+        run: ruff format --check .
+      - name: Tests (pytest)
+        run: pytest
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install packages
+        run: npm ci
+      - name: Lint (ESLint)
+        run: npm run lint
+      - name: Format check (Prettier)
+        run: npm run format:check
+      - name: Tests (Vitest)
+        run: npm test
+      - name: Production build
+        run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build and start both containers
+        run: docker compose up --build --detach
+      - name: Wait until /api/health answers through nginx (port 8080)
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --show-error http://localhost:8080/api/health; then
+              echo
+              echo "Healthy after about $((attempt * 2)) seconds"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "The app did not become healthy in time:"
+          docker compose ps
+          docker compose logs
+          exit 1
+      - name: Check the desk page loads (refresh on /desk must work)
+        run: curl --fail --silent http://localhost:8080/desk | grep --quiet '<div id="root">'
+      - name: Stop the containers
+        if: always()
+        run: docker compose down

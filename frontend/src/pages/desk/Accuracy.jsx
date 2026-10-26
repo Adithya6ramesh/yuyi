@@ -8,6 +8,7 @@
 
 import { getBreakdowns, getHorizonCurve } from '../../api.js'
 import { asciiBar, fmtMw } from '../../art/ascii.js'
+import ScrollBox from '../../components/ScrollBox.jsx'
 import { ErrorNote, Loading } from '../../components/Status.jsx'
 import { useApi } from '../../hooks/useApi.js'
 
@@ -37,56 +38,66 @@ function HorizonBars({ config, settings, series }) {
   else if (!curve.data) body = <Loading />
   else {
     const shown = curve.data.points.filter(
-      (p) => (p.hours_ahead - min) % EVERY === 0 || p.hours_ahead === max || (isHorizon && p.hours_ahead === settings.horizon),
+      (p) =>
+        (p.hours_ahead - min) % EVERY === 0 ||
+        p.hours_ahead === max ||
+        (isHorizon && p.hours_ahead === settings.horizon),
     )
     const biggest = Math.max(...shown.flatMap((p) => [Math.abs(p.lean_mw ?? 0), p.wobble_mw ?? 0]))
     body = (
       <>
-        <table className="ascii-table">
-          <caption className="sr-only">
-            Lean (how far too high on average) and wobble (how much the error jumps around), in MW,
-            for each number of hours ahead.
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">ahead</th>
-              <th scope="col" className="ascii-table__lean">lean (too high)</th>
-              <th scope="col" className="ascii-table__wobble">wobble</th>
-              <th scope="col">avg miss</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shown.map((p) => {
-              const current = isHorizon && p.hours_ahead === settings.horizon
-              const inDecisionSpan = oldest != null && p.hours_ahead >= Math.floor(newest) && p.hours_ahead <= oldest
-              return (
-                <tr
-                  key={p.hours_ahead}
-                  className={current ? 'is-current' : inDecisionSpan ? 'is-span' : undefined}
-                  aria-current={current ? 'true' : undefined}
-                >
-                  <th scope="row">
-                    {`${p.hours_ahead}h`.padStart(3, ' ')}
-                    {current ? ' ◀' : ''}
-                  </th>
-                  <td>
-                    <span className="ascii-table__lean" aria-hidden="true">
-                      {asciiBar(-(p.lean_mw ?? 0), biggest, BAR)}
-                    </span>{' '}
-                    {mw(p.lean_mw)}
-                  </td>
-                  <td>
-                    <span className="ascii-table__wobble" aria-hidden="true">
-                      {asciiBar(p.wobble_mw ?? 0, biggest, BAR)}
-                    </span>{' '}
-                    {mw(p.wobble_mw)}
-                  </td>
-                  <td>{mw(p.average_miss_mw)}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <ScrollBox label="Lean and wobble by hours ahead">
+          <table className="ascii-table">
+            <caption className="sr-only">
+              Lean (how far too high on average) and wobble (how much the error jumps around), in MW, for each
+              number of hours ahead.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">ahead</th>
+                <th scope="col" className="ascii-table__lean">
+                  lean (too high)
+                </th>
+                <th scope="col" className="ascii-table__wobble">
+                  wobble
+                </th>
+                <th scope="col">avg miss</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((p) => {
+                const current = isHorizon && p.hours_ahead === settings.horizon
+                const inDecisionSpan =
+                  oldest != null && p.hours_ahead >= Math.floor(newest) && p.hours_ahead <= oldest
+                return (
+                  <tr
+                    key={p.hours_ahead}
+                    className={current ? 'is-current' : inDecisionSpan ? 'is-span' : undefined}
+                    aria-current={current ? 'true' : undefined}
+                  >
+                    <th scope="row">
+                      {`${p.hours_ahead}h`.padStart(3, ' ')}
+                      {current ? ' ◀' : ''}
+                    </th>
+                    <td>
+                      <span className="ascii-table__lean" aria-hidden="true">
+                        {asciiBar(-(p.lean_mw ?? 0), biggest, BAR)}
+                      </span>{' '}
+                      {mw(p.lean_mw)}
+                    </td>
+                    <td>
+                      <span className="ascii-table__wobble" aria-hidden="true">
+                        {asciiBar(p.wobble_mw ?? 0, biggest, BAR)}
+                      </span>{' '}
+                      {mw(p.wobble_mw)}
+                    </td>
+                    <td>{mw(p.average_miss_mw)}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </ScrollBox>
         <p className="section-note">
           {isHorizon
             ? `◀ your slider (${settings.horizon}h). Lean is the steady over-forecast; wobble is the jumping around on top of it.`
@@ -114,27 +125,30 @@ function HorizonBars({ config, settings, series }) {
 function BreakdownTable({ rows, caption, highlight }) {
   const biggest = Math.max(...rows.map((r) => r.average_miss_mw))
   return (
-    <table className="ascii-table">
-      <caption className="sr-only">{caption}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{rows[0]?.group.includes('-') ? 'UTC' : 'wind'}</th>
-          <th scope="col">avg miss</th>
-          <th scope="col">too high</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((r) => (
-          <tr key={r.group} className={highlight && r.average_miss_mw === biggest ? 'is-worst' : undefined}>
-            <th scope="row">{r.group.replace('-', '–')}</th>
-            <td>
-              <span aria-hidden="true">{asciiBar(r.average_miss_mw, biggest, BAR + 4)}</span> {mw(r.average_miss_mw)}
-            </td>
-            <td>{`${Math.round(r.pct_hours_too_high)}%`.padStart(4, ' ')}</td>
+    <ScrollBox label={caption}>
+      <table className="ascii-table">
+        <caption className="sr-only">{caption}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{rows[0]?.group.includes('-') ? 'UTC' : 'wind'}</th>
+            <th scope="col">avg miss</th>
+            <th scope="col">too high</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.group} className={highlight && r.average_miss_mw === biggest ? 'is-worst' : undefined}>
+              <th scope="row">{r.group.replace('-', '–')}</th>
+              <td>
+                <span aria-hidden="true">{asciiBar(r.average_miss_mw, biggest, BAR + 4)}</span>{' '}
+                {mw(r.average_miss_mw)}
+              </td>
+              <td>{`${Math.round(r.pct_hours_too_high)}%`.padStart(4, ' ')}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </ScrollBox>
   )
 }
 
@@ -152,10 +166,16 @@ function Shakiest({ query }) {
     body = (
       <>
         <p className="section-sub">Average miss (MW) by time of day · {which}</p>
-        <BreakdownTable rows={parts.data.time_of_day} caption="Average miss by 3-hour block of the day (UTC)" highlight />
+        <BreakdownTable
+          rows={parts.data.time_of_day}
+          caption="Average miss by 3-hour block of the day (UTC)"
+          highlight
+        />
         <p className="section-sub section-sub--gap">By wind level · grouped by the FORECAST</p>
         <BreakdownTable
-          rows={[...parts.data.wind_level].sort((a, b) => WIND_ORDER.indexOf(a.group) - WIND_ORDER.indexOf(b.group))}
+          rows={[...parts.data.wind_level].sort(
+            (a, b) => WIND_ORDER.indexOf(a.group) - WIND_ORDER.indexOf(b.group),
+          )}
           caption="Average miss by wind level, grouped by the forecast"
         />
         <p className="section-note">

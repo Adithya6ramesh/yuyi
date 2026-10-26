@@ -11,6 +11,7 @@
 
 import { useState } from 'react'
 import { exportCsvUrl, getConfig, getSeries, getSummary } from '../api.js'
+import SkipLink from '../components/SkipLink.jsx'
 import { ErrorNote, Loading } from '../components/Status.jsx'
 import { monthYear } from '../dates.js'
 import { useApi } from '../hooks/useApi.js'
@@ -25,7 +26,7 @@ import Readouts from './desk/Readouts.jsx'
 import Sidebar from './desk/Sidebar.jsx'
 import './desk.css'
 
-export const DEBOUNCE_MS = 300
+const DEBOUNCE_MS = 300
 
 function defaultSettings(config) {
   const mode = config.default_mode
@@ -52,7 +53,7 @@ function datesProblem({ mode, start, end }, config) {
 }
 
 /** The settings as API parameters (hours ahead only matters in "hours ahead" mode). */
-export function toQuery({ mode, start, end, horizon, confidence }) {
+function toQuery({ mode, start, end, horizon, confidence }) {
   return { mode, start, end, confidence, horizon: mode === 'horizon' ? horizon : undefined }
 }
 
@@ -106,7 +107,10 @@ function DeskBody({ config }) {
 
   return (
     <>
-      <DeskHeader month={monthYear(config.date_ranges.horizon.start)} exportHref={query && exportCsvUrl(query)} />
+      <DeskHeader
+        month={monthYear(config.date_ranges.horizon.start)}
+        exportHref={query && exportCsvUrl(query)}
+      />
       <Controls config={config} settings={settings} onChange={change} />
 
       {(problem || error) && (
@@ -156,6 +160,7 @@ export default function Desk() {
 
   return (
     <div className="desk">
+      <SkipLink to="overview" />
       <Sidebar />
       <main id="overview" className="desk__main">
         {config.data ? (

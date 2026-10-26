@@ -26,8 +26,9 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# ---------- Docs & working notes (kept locally, not committed) ----------
-docs/
+# ---------- Private working notes (kept locally, never committed) ----------
+# CLAUDE.md holds the AI assistant's working rules for this project. What's worth
+# sharing from it is summarised in docs/DESIGN.md, section 12.
 CLAUDE.md
 
 # ---------- Data ----------

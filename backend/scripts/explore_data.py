@@ -50,6 +50,7 @@ pd.set_option("display.max_columns", 20)
 # Small helper functions
 # ---------------------------------------------------------------------------
 
+
 def heading(text):
     """Print a big, easy-to-spot heading."""
     print("\n" + "=" * 78)
@@ -105,10 +106,14 @@ def check_odd_values(table, name):
     print(f"[{name}] empty cells per column:")
     print("   ", table.isna().sum().to_dict())
     generation = table["generation"]
-    print(f"[{name}] generation (MW): min={generation.min()}, max={generation.max()}, "
-          f"average={generation.mean():.0f}")
-    print(f"[{name}] negative values: {(generation < 0).sum()}, "
-          f"zero values: {(generation == 0).sum()}")
+    print(
+        f"[{name}] generation (MW): min={generation.min()}, max={generation.max()}, "
+        f"average={generation.mean():.0f}"
+    )
+    print(
+        f"[{name}] negative values: {(generation < 0).sum()}, "
+        f"zero values: {(generation == 0).sum()}"
+    )
     # Great Britain has roughly 30,000 MW of wind measured this way, so anything
     # above ~35,000 MW would be suspicious.
     print(f"[{name}] values above 35,000 MW: {(generation > 35000).sum()}")
@@ -127,8 +132,9 @@ def check_time_steps(times, expected_step, first, last, name):
 
     expected = pd.date_range(first, last, freq=expected_step, tz="UTC")
     missing = expected.difference(pd.DatetimeIndex(times))
-    print(f"[{name}] expected {len(expected)} time slots, found {len(times)}, "
-          f"missing {len(missing)}")
+    print(
+        f"[{name}] expected {len(expected)} time slots, found {len(times)}, missing {len(missing)}"
+    )
     if len(missing):
         print("    missing:", [str(m) for m in missing[:10]])
 
@@ -137,15 +143,19 @@ def check_time_steps(times, expected_step, first, last, name):
 # Part 1: ACTUAL wind generation (FUELHH)
 # ---------------------------------------------------------------------------
 
+
 def explore_fuelhh():
     heading("PART 1: FUELHH - actual generation, every fuel type, every half hour")
 
     # We ask for ALL fuel types (not just wind) so you can see what else is in
     # there. Later phases can ask the API for wind only with fuelType=WIND.
-    everything = download("FUELHH", {
-        "settlementDateFrom": SAMPLE_FIRST_DAY,
-        "settlementDateTo": SAMPLE_LAST_DAY,
-    })
+    everything = download(
+        "FUELHH",
+        {
+            "settlementDateFrom": SAMPLE_FIRST_DAY,
+            "settlementDateTo": SAMPLE_LAST_DAY,
+        },
+    )
     describe(everything, "FUELHH, all fuel types")
     print("\nFuel types present:", sorted(everything["fuelType"].unique()))
 
@@ -160,8 +170,13 @@ def explore_fuelhh():
     print(pd.concat([wind.head(3), wind.tail(3)])[columns].to_string(index=False))
 
     print("\nQuality checks:")
-    check_time_steps(wind["startTime"], "30min",
-                     f"{SAMPLE_FIRST_DAY} 00:00", f"{SAMPLE_LAST_DAY} 23:30", "FUELHH WIND")
+    check_time_steps(
+        wind["startTime"],
+        "30min",
+        f"{SAMPLE_FIRST_DAY} 00:00",
+        f"{SAMPLE_LAST_DAY} 23:30",
+        "FUELHH WIND",
+    )
     check_duplicates(wind, ["startTime"], "FUELHH WIND")
     check_odd_values(wind, "FUELHH WIND")
 
@@ -175,41 +190,52 @@ def explore_fuelhh():
 # Part 2: wind FORECASTS (WINDFOR)
 # ---------------------------------------------------------------------------
 
+
 def explore_windfor():
     heading("PART 2: WINDFOR - wind forecasts")
 
-    forecasts = download("WINDFOR", {
-        "publishDateTimeFrom": FORECAST_PUBLISHED_FROM,
-        "publishDateTimeTo": FORECAST_PUBLISHED_TO,
-    })
+    forecasts = download(
+        "WINDFOR",
+        {
+            "publishDateTimeFrom": FORECAST_PUBLISHED_FROM,
+            "publishDateTimeTo": FORECAST_PUBLISHED_TO,
+        },
+    )
     forecasts = forecasts.sort_values(["publishTime", "startTime"])
     describe(forecasts, "WINDFOR")
 
     # --- How often are forecasts published, and how far ahead do they look? ---
     print("\nOne line per published forecast:")
     per_forecast = forecasts.groupby("publishTime")["startTime"].agg(
-        first_time_covered="min", last_time_covered="max", rows="count")
+        first_time_covered="min", last_time_covered="max", rows="count"
+    )
     one_hour = pd.Timedelta(hours=1)
     per_forecast["hours_ahead_of_last"] = (
-        (per_forecast["last_time_covered"] - per_forecast.index) / one_hour)
+        per_forecast["last_time_covered"] - per_forecast.index
+    ) / one_hour
     print(per_forecast.to_string())
     print("\nTime between one forecast and the next:")
     print(forecasts["publishTime"].drop_duplicates().diff().value_counts().to_string())
 
     # --- Is WINDFOR every 30 minutes or every hour? ---
-    print("\nMinutes past the hour used by startTime:",
-          sorted(forecasts["startTime"].dt.minute.unique()))
+    print(
+        "\nMinutes past the hour used by startTime:",
+        sorted(forecasts["startTime"].dt.minute.unique()),
+    )
     one_forecast = forecasts[forecasts["publishTime"] == forecasts["publishTime"].iloc[0]]
-    check_time_steps(one_forecast["startTime"], "1h",
-                     one_forecast["startTime"].min(), one_forecast["startTime"].max(),
-                     "WINDFOR (one forecast)")
+    check_time_steps(
+        one_forecast["startTime"],
+        "1h",
+        one_forecast["startTime"].min(),
+        one_forecast["startTime"].max(),
+        "WINDFOR (one forecast)",
+    )
 
     # --- Zoom in on ONE startTime: every forecast ever made for it ---
     example_time = pd.Timestamp(EXAMPLE_START_TIME)
     history = forecasts[forecasts["startTime"] == example_time].copy()
     history["hours_before"] = (example_time - history["publishTime"]) / one_hour
-    print(f"\nAll forecasts for startTime {example_time} "
-          f"({len(history)} of them), oldest first:")
+    print(f"\nAll forecasts for startTime {example_time} ({len(history)} of them), oldest first:")
     print(history[["publishTime", "hours_before", "generation"]].to_string(index=False))
 
     print("\nQuality checks:")
@@ -227,6 +253,7 @@ def explore_windfor():
 # Part 3: a first peek at forecast vs actual, side by side
 # ---------------------------------------------------------------------------
 
+
 def compare_example(wind, forecasts):
     heading("PART 3: forecast vs actual for the example time (just a peek)")
     example_time = pd.Timestamp(EXAMPLE_START_TIME)
@@ -240,10 +267,14 @@ def compare_example(wind, forecasts):
     latest = usable.iloc[-1]
 
     print(f"Actual wind at {example_time}: {actual.iloc[0]} MW")
-    print(f"Latest forecast published BEFORE that time "
-          f"({latest['publishTime']}): {latest['generation']} MW")
-    print(f"Forecasts published AFTER the time had already passed "
-          f"(must be ignored): {len(published_after)}")
+    print(
+        f"Latest forecast published BEFORE that time "
+        f"({latest['publishTime']}): {latest['generation']} MW"
+    )
+    print(
+        f"Forecasts published AFTER the time had already passed "
+        f"(must be ignored): {len(published_after)}"
+    )
 
 
 def main():

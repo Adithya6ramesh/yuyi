@@ -9,7 +9,7 @@ from pathlib import Path
 # Elexon's public API. No key needed.
 BASE_URL = "https://data.elexon.co.uk/bmrs/api/v1/datasets"
 
-# --- Date ranges (decided in Phase 0, see docs/data_notes.md) ---
+# --- Date ranges (why these: see docs/DESIGN.md, section 3 "Data") ---
 # Forecasts: everything PUBLISHED from 30 Dec 2025 00:00 up to (not including) 1 Feb 2026 00:00 UTC.
 FORECASTS_FIRST_PUBLISH_DAY = date(2025, 12, 30)
 FORECASTS_LAST_PUBLISH_DAY = date(2026, 1, 31)
@@ -32,7 +32,7 @@ DECISION_DEADLINE_TIME = time(9, 50)
 # --- Folders ---
 BACKEND_DIR = Path(__file__).resolve().parents[2]  # .../backend
 DATA_DIR = BACKEND_DIR / "data"
-RAW_DIR = DATA_DIR / "raw"              # untouched downloads (git-ignored)
+RAW_DIR = DATA_DIR / "raw"  # untouched downloads (git-ignored)
 PROCESSED_DIR = DATA_DIR / "processed"  # clean files the app will read
 
 RAW_ACTUALS_DIR = RAW_DIR / "fuelhh"

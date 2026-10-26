@@ -35,7 +35,9 @@ export default function Readouts({ summary, confidence }) {
           {fmtMw(summary.average_miss_mw)}
           <small> MW</small>
         </p>
-        <p className="readout__note">Average gap, forecast vs reality · {fmtMw(summary.hours_counted)} hours</p>
+        <p className="readout__note">
+          Average gap, forecast vs reality · {fmtMw(summary.hours_counted)} hours
+        </p>
       </div>
 
       <div className="readout">

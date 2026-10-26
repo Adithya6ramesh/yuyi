@@ -75,7 +75,9 @@ describe('the desk', () => {
   it('shows a friendly message when the server cannot be reached', async () => {
     api.getConfig.mockRejectedValue(new api.ApiError(api.SERVER_DOWN_MESSAGE))
     renderDesk()
-    expect(await screen.findByRole('alert')).toHaveTextContent("Can't reach the server. Is the backend running?")
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      "Can't reach the server. Is the backend running?",
+    )
   })
 
   it('the Export CSV button links to /api/export.csv with the current settings', async () => {

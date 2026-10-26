@@ -22,12 +22,12 @@ from app.core.cushion import CONFIDENCE_LEVELS
 
 
 class Mode(str, Enum):
-    horizon = "horizon"            # each hour uses the newest forecast made H hours before it
+    horizon = "horizon"  # each hour uses the newest forecast made H hours before it
     decision_day = "decision_day"  # every hour uses the newest forecast at 09:50 the day before
 
 
 class Method(str, Enum):
-    one_size = "one_size"    # one cushion for every hour (the default, passed the back-test)
+    one_size = "one_size"  # one cushion for every hour (the default, passed the back-test)
     per_group = "per_group"  # a cushion per wind level (experimental, failed the back-test)
 
 
@@ -48,6 +48,7 @@ class DateRange(BaseModel):
 
 class Period(BaseModel):
     """A stretch of days, e.g. the weeks a cushion was learned from."""
+
     start: date | None
     end: date | None
     hours: int
@@ -63,15 +64,16 @@ class Health(BaseModel):
 
 class SeriesRow(BaseModel):
     """One hour on the chart. Values are empty (null) if there was nothing to show."""
-    time: datetime                 # the hour being delivered (UTC)
+
+    time: datetime  # the hour being delivered (UTC)
     actual_mw: float | None
-    forecast_mw: float | None      # the forecast that was available at the deadline
+    forecast_mw: float | None  # the forecast that was available at the deadline
     publish_time: datetime | None  # when that forecast was published
-    deadline: datetime             # the latest publish_time allowed for this hour
-    lead_time_h: float | None      # how long before the hour it was published
-    error_mw: float | None         # actual - forecast; negative = forecast too high
-    range_low_mw: float | None     # forecast + lower cushion percentile
-    range_high_mw: float | None    # forecast + upper cushion percentile
+    deadline: datetime  # the latest publish_time allowed for this hour
+    lead_time_h: float | None  # how long before the hour it was published
+    error_mw: float | None  # actual - forecast; negative = forecast too high
+    range_low_mw: float | None  # forecast + lower cushion percentile
+    range_high_mw: float | None  # forecast + upper cushion percentile
 
 
 class SeriesResponse(BaseModel):
@@ -88,6 +90,7 @@ class SeriesResponse(BaseModel):
 
 class SummaryResponse(BaseModel):
     """metrics.summary() numbers (empty if no hours matched) plus the cushion."""
+
     mode: Mode
     horizon: int | None
     confidence: int
@@ -168,8 +171,8 @@ class BacktestResponse(BaseModel):
     train_period: Period
     test_period: Period
     target_pct: float
-    actual_coverage_pct: float     # actual landed inside the range
-    caught_short_pct: float        # actual came in BELOW the range (the costly side)
+    actual_coverage_pct: float  # actual landed inside the range
+    caught_short_pct: float  # actual came in BELOW the range (the costly side)
     above_range_pct: float
     below_raw_forecast_pct: float  # actual below the plain forecast (no cushion at all)
     average_cushion_mw: float

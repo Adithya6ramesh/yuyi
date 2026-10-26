@@ -6,15 +6,15 @@ afterEach(() => vi.unstubAllGlobals())
 
 describe('buildUrl', () => {
   it('adds the settings and leaves out empty ones', () => {
-    expect(buildUrl('/api/summary', { mode: 'decision_day', horizon: undefined, start: '', confidence: 90 })).toBe(
-      '/api/summary?mode=decision_day&confidence=90',
-    )
+    expect(
+      buildUrl('/api/summary', { mode: 'decision_day', horizon: undefined, start: '', confidence: 90 }),
+    ).toBe('/api/summary?mode=decision_day&confidence=90')
   })
 
   it('builds the CSV export address from the current settings', () => {
-    expect(exportCsvUrl({ mode: 'horizon', start: '2026-01-14', end: '2026-01-15', confidence: 95, horizon: 12 })).toBe(
-      '/api/export.csv?mode=horizon&start=2026-01-14&end=2026-01-15&confidence=95&horizon=12',
-    )
+    expect(
+      exportCsvUrl({ mode: 'horizon', start: '2026-01-14', end: '2026-01-15', confidence: 95, horizon: 12 }),
+    ).toBe('/api/export.csv?mode=horizon&start=2026-01-14&end=2026-01-15&confidence=95&horizon=12')
   })
 })
 
@@ -32,6 +32,8 @@ describe('friendly errors', () => {
   it("passes on the backend's own plain-English message for bad inputs", async () => {
     const body = JSON.stringify({ error: 'horizon must be a whole number of hours from 0 to 43.' })
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(body, { status: 422 })))
-    await expect(getSummary({ horizon: 99 })).rejects.toThrow('horizon must be a whole number of hours from 0 to 43.')
+    await expect(getSummary({ horizon: 99 })).rejects.toThrow(
+      'horizon must be a whole number of hours from 0 to 43.',
+    )
   })
 })

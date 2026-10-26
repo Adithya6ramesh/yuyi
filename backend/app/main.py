@@ -33,8 +33,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="UK Wind Forecast Accuracy API",
     description="How accurate were national wind forecasts (Elexon WINDFOR) against "
-                "actual wind (Elexon FUELHH) for day-ahead purchases in January 2026? "
-                "All times are UTC.",
+    "actual wind (Elexon FUELHH) for day-ahead purchases in January 2026? "
+    "All times are UTC.",
     version="0.4.0",
     lifespan=lifespan,
 )

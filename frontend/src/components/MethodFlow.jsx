@@ -75,7 +75,9 @@ export default function MethodFlow({ cfg, quality, summary, backtest }) {
             <Box name="LATEST BEFORE DEADLINE">
               <p className="flow-box__text">For each hour T, the newest forecast with</p>
               <p className="flow-box__formula">publishTime ≤ T − H</p>
-              <p className="flow-box__ok">[ok] {summary ? fmtMw(summary.hours_counted) : LOADING} hours matched</p>
+              <p className="flow-box__ok">
+                [ok] {summary ? fmtMw(summary.hours_counted) : LOADING} hours matched
+              </p>
               <p className="flow-box__reject">✕ published later → ignored</p>
             </Box>
           </div>
@@ -91,8 +93,11 @@ export default function MethodFlow({ cfg, quality, summary, backtest }) {
               <p className="flow-box__formula">actual − forecast</p>
               <p className="flow-box__text">average miss · lean · wobble</p>
               <p className="flow-box__meta">
-                lean {summary ? `${summary.lean_mw < 0 ? '−' : '+'}${fmtAbout(Math.abs(summary.lean_mw))} MW` : LOADING} at{' '}
-                {cfg ? `${cfg.horizon_slider.default}h` : LOADING}
+                lean{' '}
+                {summary
+                  ? `${summary.lean_mw < 0 ? '−' : '+'}${fmtAbout(Math.abs(summary.lean_mw))} MW`
+                  : LOADING}{' '}
+                at {cfg ? `${cfg.horizon_slider.default}h` : LOADING}
               </p>
             </Box>
           </div>
@@ -107,7 +112,8 @@ export default function MethodFlow({ cfg, quality, summary, backtest }) {
             <Box name="CUSHION">
               <p className="flow-box__formula">{tail ? `−p${tail}(miss)` : LOADING}</p>
               <p className="flow-box__meta">
-                ≈ {summary ? `${fmtAbout(summary.cushion_mw)} MW` : LOADING} at {confidence ?? LOADING}% caution
+                ≈ {summary ? `${fmtAbout(summary.cushion_mw)} MW` : LOADING} at {confidence ?? LOADING}%
+                caution
               </p>
             </Box>
             <span className="flow-down" aria-hidden="true">

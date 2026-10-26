@@ -17,14 +17,16 @@ def comparison(errors, forecast=1000, start="2026-01-14 00:00"):
     """A comparison table with the given errors (actual = forecast + error)."""
     times = pd.date_range(start, periods=len(errors), freq="h", tz="UTC")
     forecasts = [forecast] * len(errors) if not isinstance(forecast, list) else forecast
-    return pd.DataFrame({
-        "start_time": times,
-        "actual_mw": [f + e for f, e in zip(forecasts, errors)],
-        "forecast_mw": forecasts,
-        "publish_time": times - pd.Timedelta(hours=25),
-        "lead_time_h": [25.0] * len(errors),
-        "error_mw": errors,
-    })
+    return pd.DataFrame(
+        {
+            "start_time": times,
+            "actual_mw": [f + e for f, e in zip(forecasts, errors, strict=True)],
+            "forecast_mw": forecasts,
+            "publish_time": times - pd.Timedelta(hours=25),
+            "lead_time_h": [25.0] * len(errors),
+            "error_mw": errors,
+        }
+    )
 
 
 # Errors [-300, -100, 0, +100, +300]. By hand:
@@ -93,8 +95,9 @@ def test_wind_level_boundaries():
 
 def test_breakdowns_group_by_forecast_and_time_block():
     # 6 hours: forecasts 1000,1000,5000,5000,9000,9000 -> one third in each level.
-    table = comparison([-10, -10, -50, -50, -90, -90],
-                       forecast=[1000, 1000, 5000, 5000, 9000, 9000])
+    table = comparison(
+        [-10, -10, -50, -50, -90, -90], forecast=[1000, 1000, 5000, 5000, 9000, 9000]
+    )
     parts = breakdowns(table)
     wind = parts["wind_level"]
     assert wind.loc["low", "lean_mw"] == -10

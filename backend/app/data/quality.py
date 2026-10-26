@@ -19,8 +19,15 @@ ONE_HOUR = pd.Timedelta(hours=1)
 # Lead-time groups, in hours. "Lead time" = how long before the target hour the
 # forecast was published.
 LEAD_BINS = [float("-inf"), 0, 6, 12, 24, 36, 48, float("inf")]
-LEAD_LABELS = ["negative (published after target)", "0-6h", "6-12h", "12-24h",
-               "24-36h", "36-48h", "48h+"]
+LEAD_LABELS = [
+    "negative (published after target)",
+    "0-6h",
+    "6-12h",
+    "12-24h",
+    "24-36h",
+    "36-48h",
+    "48h+",
+]
 
 # If average forecast / average actual is outside this range, we warn.
 SCALE_OK_RANGE = (0.8, 1.25)
@@ -32,8 +39,9 @@ def _time_text(timestamps):
 
 
 def check_actuals(actuals, stats):
-    expected = pd.date_range(f"{ACTUALS_FIRST_DAY} 00:00", f"{ACTUALS_LAST_DAY} 23:30",
-                             freq="30min", tz="UTC")
+    expected = pd.date_range(
+        f"{ACTUALS_FIRST_DAY} 00:00", f"{ACTUALS_LAST_DAY} 23:30", freq="30min", tz="UTC"
+    )
     found = pd.DatetimeIndex(actuals["start_time"].unique())
     missing = expected.difference(found)
     # Same half-hour more than once but with DIFFERENT values: not an exact
@@ -63,8 +71,9 @@ def check_forecasts(forecasts, stats):
     versions = forecasts.groupby("start_time").size()
     # Target hours inside January are the ones we care about; hours at the very
     # edges of the download naturally have fewer versions.
-    january = versions[(versions.index >= DECISION_MONTH_START)
-                       & (versions.index < DECISION_MONTH_END)]
+    january = versions[
+        (versions.index >= DECISION_MONTH_START) & (versions.index < DECISION_MONTH_END)
+    ]
     usable = forecasts[forecasts["publish_time"] <= forecasts["start_time"]]
     usable_january = usable.groupby("start_time").size().reindex(january.index, fill_value=0)
 
@@ -76,15 +85,21 @@ def check_forecasts(forecasts, stats):
         "distinct_target_hours": int(versions.size),
         "target_hours_not_on_the_hour": int((forecasts["start_time"].dt.minute != 0).sum()),
         "versions_per_target_hour_all": {
-            "min": int(versions.min()), "max": int(versions.max()),
-            "typical": int(versions.median())},
+            "min": int(versions.min()),
+            "max": int(versions.max()),
+            "typical": int(versions.median()),
+        },
         "versions_per_january_target_hour": {
-            "min": int(january.min()), "max": int(january.max()),
-            "typical": int(january.median())},
+            "min": int(january.min()),
+            "max": int(january.max()),
+            "typical": int(january.median()),
+        },
         "usable_versions_per_january_target_hour": {
             "note": "only versions published at or before the target hour",
-            "min": int(usable_january.min()), "max": int(usable_january.max()),
-            "typical": int(usable_january.median())},
+            "min": int(usable_january.min()),
+            "max": int(usable_january.max()),
+            "typical": int(usable_january.median()),
+        },
         "empty_values": int(generation.isna().sum()),
         "negative_values": int((generation < 0).sum()),
         "min_mw": float(generation.min()),
@@ -102,9 +117,11 @@ def check_lead_times(forecasts):
     # (counting only forecasts published before the target)? The smallest of
     # these is how far ahead we can look for EVERY hour in January.
     table = forecasts.assign(lead_hours=lead)
-    table = table[(table["lead_hours"] >= 0)
-                  & (table["start_time"] >= DECISION_MONTH_START)
-                  & (table["start_time"] < DECISION_MONTH_END)]
+    table = table[
+        (table["lead_hours"] >= 0)
+        & (table["start_time"] >= DECISION_MONTH_START)
+        & (table["start_time"] < DECISION_MONTH_END)
+    ]
     longest_per_target = table.groupby("start_time")["lead_hours"].max()
     shortest_per_target = table.groupby("start_time")["lead_hours"].min()
 
@@ -130,8 +147,9 @@ def check_scale(actuals, forecasts):
     usable = forecasts[forecasts["publish_time"] <= forecasts["start_time"]]
     latest = usable.sort_values("publish_time").groupby("start_time").tail(1)
     both = latest.merge(actuals, on="start_time", suffixes=("_forecast", "_actual"))
-    both = both[(both["start_time"] >= DECISION_MONTH_START)
-                & (both["start_time"] < DECISION_MONTH_END)]
+    both = both[
+        (both["start_time"] >= DECISION_MONTH_START) & (both["start_time"] < DECISION_MONTH_END)
+    ]
 
     mean_actual = both["generation_mw_actual"].mean()
     mean_forecast = both["generation_mw_forecast"].mean()
@@ -162,27 +180,42 @@ def print_summary(report):
     print("\n================ DATA QUALITY SUMMARY ================")
     print("\nACTUALS (FUELHH wind, every 30 min)")
     print(f"  half-hours expected / found : {a['expected_half_hours']} / {a['found_half_hours']}")
-    print(f"  missing half-hours          : {len(a['missing_half_hours'])} "
-          f"{a['missing_half_hours'][:10]}")
+    print(
+        f"  missing half-hours          : {len(a['missing_half_hours'])} "
+        f"{a['missing_half_hours'][:10]}"
+    )
     print(f"  duplicates removed          : {a['duplicates_removed']}")
     print(f"  conflicting values          : {a['half_hours_with_conflicting_values']}")
     print(f"  empty / negative values     : {a['empty_values']} / {a['negative_values']}")
-    print(f"  range                       : {a['min_mw']:.0f} - {a['max_mw']:.0f} MW "
-          f"(average {a['mean_mw']:.0f})")
+    print(
+        f"  range                       : {a['min_mw']:.0f} - {a['max_mw']:.0f} MW "
+        f"(average {a['mean_mw']:.0f})"
+    )
 
     print("\nFORECASTS (WINDFOR, hourly)")
-    print(f"  rows                        : {f['clean_rows']} "
-          f"(duplicates removed: {f['duplicates_removed']})")
-    print(f"  forecasts published         : {f['distinct_publish_times']} "
-          f"at {', '.join(f['publish_times_of_day'])} UTC")
+    print(
+        f"  rows                        : {f['clean_rows']} "
+        f"(duplicates removed: {f['duplicates_removed']})"
+    )
+    print(
+        f"  forecasts published         : {f['distinct_publish_times']} "
+        f"at {', '.join(f['publish_times_of_day'])} UTC"
+    )
     print(f"  days without 8 forecasts    : {f['days_without_8_publishes'] or 'none'}")
     print(f"  distinct target hours       : {f['distinct_target_hours']}")
-    v, j, u = (f["versions_per_target_hour_all"], f["versions_per_january_target_hour"],
-               f["usable_versions_per_january_target_hour"])
-    print(f"  versions per target hour    : all hours min {v['min']} / max {v['max']}; "
-          f"January hours min {j['min']} / typical {j['typical']} / max {j['max']}")
-    print(f"  ...published BEFORE target  : January hours min {u['min']} / "
-          f"typical {u['typical']} / max {u['max']}")
+    v, j, u = (
+        f["versions_per_target_hour_all"],
+        f["versions_per_january_target_hour"],
+        f["usable_versions_per_january_target_hour"],
+    )
+    print(
+        f"  versions per target hour    : all hours min {v['min']} / max {v['max']}; "
+        f"January hours min {j['min']} / typical {j['typical']} / max {j['max']}"
+    )
+    print(
+        f"  ...published BEFORE target  : January hours min {u['min']} / "
+        f"typical {u['typical']} / max {u['max']}"
+    )
     print(f"  empty / negative values     : {f['empty_values']} / {f['negative_values']}")
 
     print("\nLEAD TIME (target time minus publish time)")
@@ -190,9 +223,12 @@ def print_summary(report):
     for label, count in lead["counts_by_group"].items():
         print(f"    {label:<36} {count:>6}")
     jt = lead["january_targets"]
-    print(f"  every January hour has forecasts from up to {jt['longest_lead_available_for_every_hour']}h ahead")
-    print(f"  (some hours have up to {jt['longest_lead_available_for_some_hours']}h); "
-          f"the freshest forecast is never more than {jt['shortest_lead_available_worst_case']}h old")
+    longest = jt["longest_lead_available_for_every_hour"]
+    print(f"  every January hour has forecasts from up to {longest}h ahead")
+    print(
+        f"  (some hours have up to {jt['longest_lead_available_for_some_hours']}h); "
+        f"the freshest forecast is never more than {jt['shortest_lead_available_worst_case']}h old"
+    )
 
     print("\nSCALE CHECK (January, on-the-hour, latest forecast published before target)")
     print(f"  average actual   : {scale['mean_actual_mw']:.0f} MW")

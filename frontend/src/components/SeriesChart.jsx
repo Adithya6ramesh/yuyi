@@ -10,22 +10,28 @@
                   and calls onCursorChange(index) with the hour picked.
   label: what a screen reader hears instead of the picture.
   children: optional function (layout) => extra SVG, drawn behind the lines (e.g. the
-            desk's "test week" shading). layout has x(time) and y(mw).
+            desk's "test week" shading). layout has x(time), y(mw), the plot edges
+            (left, right, top, bottom) and narrow (true on phone-sized screens).
+
+  On phone-sized screens the chart is drawn on a narrower, taller canvas, so its text
+  stays readable (about 11 px) instead of shrinking with a 1000-unit-wide drawing.
 */
 
 import { useRef } from 'react'
+import { useMediaQuery } from '../hooks/useMediaQuery.js'
 
-const LEFT = 56
-const RIGHT = 984
-const TOP = 20
-const BOTTOM = 264
 const HOUR = 3600 * 1000
 const STEP_MW = 5000 // a grid line every 5 GW
 
-const labelStyle = { fill: 'var(--muted-2)', fontSize: 12, fontFamily: 'var(--mono)' }
+// Drawing sizes, in SVG units: the normal one, and one for phone-sized screens.
+const SIZES = {
+  wide: { width: 1000, height: 300, left: 56, right: 984, top: 20, bottom: 264, font: 12, maxDays: 8 },
+  narrow: { width: 420, height: 320, left: 46, right: 410, top: 18, bottom: 282, font: 13, maxDays: 4 },
+}
 
-/** Positions on the chart for a set of rows (shared with overlays such as the desk's). */
-export function chartLayout(rows) {
+/** Positions on the chart for a set of rows (also handed to overlays such as the desk's). */
+function chartLayout(rows, size, narrow) {
+  const { left, right, top: plotTop, bottom } = size
   const times = rows.map((r) => Date.parse(r.time))
   const start = times[0]
   const end = times[times.length - 1] + HOUR // the last hour runs until here
@@ -38,9 +44,14 @@ export function chartLayout(rows) {
     times,
     start,
     end,
-    top,
-    x: (time) => LEFT + ((time - start) / (end - start)) * (RIGHT - LEFT),
-    y: (mw) => TOP + (1 - Math.max(0, Math.min(top, mw)) / top) * (BOTTOM - TOP),
+    topMw: top,
+    left,
+    right,
+    top: plotTop,
+    bottom,
+    narrow,
+    x: (time) => left + ((time - start) / (end - start)) * (right - left),
+    y: (mw) => plotTop + (1 - Math.max(0, Math.min(top, mw)) / top) * (bottom - plotTop),
   }
 }
 
@@ -70,11 +81,14 @@ function bandPath(rows, layout) {
 }
 
 const dayLabel = (time) =>
-  new Date(time).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' }).toUpperCase()
+  new Date(time)
+    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' })
+    .toUpperCase()
 
-/** The row whose hour is closest to a position across the chart (0..1000). */
+/** The row whose hour is closest to a position across the chart (in SVG units). */
 function nearestIndex(layout, svgX) {
-  const time = layout.start + ((svgX - LEFT) / (RIGHT - LEFT)) * (layout.end - layout.start)
+  const time =
+    layout.start + ((svgX - layout.left) / (layout.right - layout.left)) * (layout.end - layout.start)
   let best = 0
   layout.times.forEach((t, i) => {
     if (Math.abs(t - time) < Math.abs(layout.times[best] - time)) best = i
@@ -86,14 +100,17 @@ const KEY_STEPS = { ArrowLeft: -1, ArrowRight: 1, PageUp: -24, PageDown: 24 }
 
 export default function SeriesChart({ rows, cursorIndex = null, onCursorChange, label, children }) {
   const svgRef = useRef(null)
+  const narrow = useMediaQuery('(max-width: 600px)')
   if (!rows?.length) return null
-  const layout = chartLayout(rows)
+  const size = narrow ? SIZES.narrow : SIZES.wide
+  const layout = chartLayout(rows, size, narrow)
+  const labelStyle = { fill: 'var(--muted-2)', fontSize: size.font, fontFamily: 'var(--mono)' }
   const interactive = Boolean(onCursorChange)
 
   // Mouse or finger: find where on the chart it is, in chart units.
   const pick = (event) => {
     const box = svgRef.current.getBoundingClientRect()
-    onCursorChange(nearestIndex(layout, ((event.clientX - box.left) / box.width) * 1000))
+    onCursorChange(nearestIndex(layout, ((event.clientX - box.left) / box.width) * size.width))
   }
   // Keyboard: arrows move one hour, Page Up/Down one day, Home/End to the ends.
   const onKeyDown = (event) => {
@@ -108,13 +125,13 @@ export default function SeriesChart({ rows, cursorIndex = null, onCursorChange, 
   }
 
   const gridLines = []
-  for (let mw = 0; mw <= layout.top; mw += STEP_MW) gridLines.push(mw)
+  for (let mw = 0; mw <= layout.topMw; mw += STEP_MW) gridLines.push(mw)
 
   // a label at every midnight between start and end
   const days = []
   for (let t = layout.start; t <= layout.end; t += 24 * HOUR) days.push(t)
-  // on long ranges, keep about 8 day labels so they don't overlap
-  const every = Math.max(1, Math.ceil(days.length / 8))
+  // on long ranges, keep only a few day labels so they don't overlap
+  const every = Math.max(1, Math.ceil(days.length / size.maxDays))
   const shownDays = days.filter((_, i) => i % every === 0 || i === days.length - 1)
 
   const cursor = cursorIndex != null && rows[cursorIndex]
@@ -123,19 +140,21 @@ export default function SeriesChart({ rows, cursorIndex = null, onCursorChange, 
   return (
     <svg
       ref={svgRef}
-      viewBox="0 0 1000 300"
+      viewBox={`0 0 ${size.width} ${size.height}`}
       role="img"
-      aria-label={interactive ? `${label} Use the left and right arrow keys to move through the hours.` : label}
+      aria-label={
+        interactive ? `${label} Use the left and right arrow keys to move through the hours.` : label
+      }
       className={`series-chart${interactive ? ' series-chart--interactive' : ''}`}
       tabIndex={interactive ? 0 : undefined}
       onKeyDown={interactive ? onKeyDown : undefined}
     >
       <path
-        d={gridLines.map((mw) => `M${LEFT} ${layout.y(mw).toFixed(1)} H${RIGHT}`).join(' ')}
+        d={gridLines.map((mw) => `M${size.left} ${layout.y(mw).toFixed(1)} H${size.right}`).join(' ')}
         style={{ stroke: 'var(--line)', strokeWidth: 1 }}
       />
       {gridLines.map((mw) => (
-        <text key={mw} x={LEFT - 10} y={layout.y(mw) + 4} style={{ ...labelStyle, textAnchor: 'end' }}>
+        <text key={mw} x={size.left - 8} y={layout.y(mw) + 4} style={{ ...labelStyle, textAnchor: 'end' }}>
           {mw === 0 ? '0' : `${mw / 1000}GW`}
         </text>
       ))}
@@ -152,7 +171,7 @@ export default function SeriesChart({ rows, cursorIndex = null, onCursorChange, 
       {cursor && cursor.actual_mw != null && (
         <>
           <path
-            d={`M${cursorX} ${TOP} V${BOTTOM}`}
+            d={`M${cursorX} ${size.top} V${size.bottom}`}
             style={{ stroke: 'var(--accent)', strokeWidth: 1, strokeDasharray: '2 4', strokeOpacity: 0.6 }}
           />
           <circle
@@ -166,10 +185,10 @@ export default function SeriesChart({ rows, cursorIndex = null, onCursorChange, 
       {interactive && (
         // an invisible layer over the plot that catches the mouse / finger
         <rect
-          x={LEFT}
-          y={TOP}
-          width={RIGHT - LEFT}
-          height={BOTTOM - TOP}
+          x={size.left}
+          y={size.top}
+          width={size.right - size.left}
+          height={size.bottom - size.top}
           fill="transparent"
           onPointerMove={pick}
           onPointerDown={pick}
@@ -178,7 +197,7 @@ export default function SeriesChart({ rows, cursorIndex = null, onCursorChange, 
       {shownDays.map((t, i) => {
         const anchor = i === 0 ? 'start' : i === shownDays.length - 1 ? 'end' : 'middle'
         return (
-          <text key={t} x={layout.x(t)} y="290" style={{ ...labelStyle, textAnchor: anchor }}>
+          <text key={t} x={layout.x(t)} y={size.height - 10} style={{ ...labelStyle, textAnchor: anchor }}>
             {dayLabel(t)}
           </text>
         )

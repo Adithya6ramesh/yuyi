@@ -21,8 +21,17 @@ from app.core.metrics import summary
 from app.data.settings import ACTUALS_FILE, FORECASTS_FILE
 from app.main import app
 
-SERIES_COLUMNS = ["time", "actual_mw", "forecast_mw", "publish_time", "deadline",
-                  "lead_time_h", "error_mw", "range_low_mw", "range_high_mw"]
+SERIES_COLUMNS = [
+    "time",
+    "actual_mw",
+    "forecast_mw",
+    "publish_time",
+    "deadline",
+    "lead_time_h",
+    "error_mw",
+    "range_low_mw",
+    "range_high_mw",
+]
 
 
 @pytest.fixture(scope="module")
@@ -41,15 +50,28 @@ def data():
 # Every endpoint answers with its defaults
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("url", [
-    "/api/health", "/api/config", "/api/series", "/api/summary", "/api/horizon-curve",
-    "/api/breakdowns", "/api/backtest", "/api/decision-day", "/api/quality",
-    "/api/export.csv",
-    # and a few non-default choices
-    "/api/series?mode=decision_day", "/api/summary?mode=decision_day&confidence=95",
-    "/api/backtest?method=per_group", "/api/breakdowns?mode=decision_day",
-    "/api/decision-day?date=2026-02-01",
-])
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "/api/health",
+        "/api/config",
+        "/api/series",
+        "/api/summary",
+        "/api/horizon-curve",
+        "/api/breakdowns",
+        "/api/backtest",
+        "/api/decision-day",
+        "/api/quality",
+        "/api/export.csv",
+        # and a few non-default choices
+        "/api/series?mode=decision_day",
+        "/api/summary?mode=decision_day&confidence=95",
+        "/api/backtest?method=per_group",
+        "/api/breakdowns?mode=decision_day",
+        "/api/decision-day?date=2026-02-01",
+    ],
+)
 def test_endpoint_returns_200(client, url):
     assert client.get(url).status_code == 200
 
@@ -74,20 +96,24 @@ def test_config_has_slider_and_choices(client):
 # Bad inputs -> 422 with a helpful message
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("url, field, words", [
-    ("/api/series?horizon=44", "horizon", "0 to 43"),
-    ("/api/series?horizon=-1", "horizon", "0 to 43"),
-    ("/api/series?horizon=abc", "horizon", "0 to 43"),
-    ("/api/series?mode=weekly", "mode", "horizon, decision_day"),
-    ("/api/summary?confidence=85", "confidence", "80, 90, 95"),
-    ("/api/backtest?method=magic", "method", "one_size, per_group"),
-    ("/api/series?start=2025-12-31", "start", "between 2026-01-01 and 2026-01-31"),
-    ("/api/series?end=2026-02-01", "end", "between 2026-01-01 and 2026-01-31"),
-    ("/api/series?mode=decision_day&start=2026-01-01", "start", "between 2026-01-02"),
-    ("/api/series?start=2026-01-20&end=2026-01-10", "start", "is after end"),
-    ("/api/series?start=15-01-2026", "start", "YYYY-MM-DD"),
-    ("/api/decision-day?date=2026-03-01", "date", "between 2026-01-02 and 2026-02-01"),
-])
+
+@pytest.mark.parametrize(
+    "url, field, words",
+    [
+        ("/api/series?horizon=44", "horizon", "0 to 43"),
+        ("/api/series?horizon=-1", "horizon", "0 to 43"),
+        ("/api/series?horizon=abc", "horizon", "0 to 43"),
+        ("/api/series?mode=weekly", "mode", "horizon, decision_day"),
+        ("/api/summary?confidence=85", "confidence", "80, 90, 95"),
+        ("/api/backtest?method=magic", "method", "one_size, per_group"),
+        ("/api/series?start=2025-12-31", "start", "between 2026-01-01 and 2026-01-31"),
+        ("/api/series?end=2026-02-01", "end", "between 2026-01-01 and 2026-01-31"),
+        ("/api/series?mode=decision_day&start=2026-01-01", "start", "between 2026-01-02"),
+        ("/api/series?start=2026-01-20&end=2026-01-10", "start", "is after end"),
+        ("/api/series?start=15-01-2026", "start", "YYYY-MM-DD"),
+        ("/api/decision-day?date=2026-03-01", "date", "between 2026-01-02 and 2026-02-01"),
+    ],
+)
 def test_bad_input_gives_helpful_message(client, url, field, words):
     response = client.get(url)
     assert response.status_code == 422
@@ -99,6 +125,7 @@ def test_bad_input_gives_helpful_message(client, url, field, words):
 # ---------------------------------------------------------------------------
 # The forecast-matching rule is never broken
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize("query", ["horizon=0", "horizon=24", "horizon=43", "mode=decision_day"])
 def test_series_never_uses_a_forecast_published_after_its_deadline(client, query):
@@ -121,6 +148,7 @@ def test_decision_day_uses_one_deadline_the_day_before(client):
 # ---------------------------------------------------------------------------
 # The API serves the Phase 3 numbers unchanged
 # ---------------------------------------------------------------------------
+
 
 def assert_same_summary(api, expected):
     for name, value in expected.items():
@@ -168,6 +196,7 @@ def test_backtest_per_group_is_labelled_experimental(client):
 # ---------------------------------------------------------------------------
 # CSV export and CORS
 # ---------------------------------------------------------------------------
+
 
 def test_export_csv_has_expected_columns(client):
     response = client.get("/api/export.csv?start=2026-01-14&end=2026-01-14")

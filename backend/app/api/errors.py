@@ -33,10 +33,14 @@ FRIENDLY_MESSAGES = {
         "would have no forecast at all, so the numbers would not be comparable."
     ),
     "mode": f"mode must be one of: {_listed(m.value for m in Mode)}.",
-    "confidence": (f"confidence must be one of: {_listed(CONFIDENCE_LEVELS)} "
-                   "(the % of hours the cushion should cover)."),
-    "method": (f"method must be one of: {_listed(m.value for m in Method)} "
-               "(per_group is experimental: it failed the back-test)."),
+    "confidence": (
+        f"confidence must be one of: {_listed(CONFIDENCE_LEVELS)} "
+        "(the % of hours the cushion should cover)."
+    ),
+    "method": (
+        f"method must be one of: {_listed(m.value for m in Method)} "
+        "(per_group is experimental: it failed the back-test)."
+    ),
     "start": "start must be a date written as YYYY-MM-DD, for example 2026-01-15.",
     "end": "end must be a date written as YYYY-MM-DD, for example 2026-01-15.",
     "date": "date must be a date written as YYYY-MM-DD, for example 2026-01-15.",
@@ -53,8 +57,9 @@ class InputError(Exception):
 
 
 def _reply(problems):
-    return JSONResponse(status_code=422,
-                        content={"error": problems[0]["message"], "problems": problems})
+    return JSONResponse(
+        status_code=422, content={"error": problems[0]["message"], "problems": problems}
+    )
 
 
 async def _on_validation_error(request: Request, exc: RequestValidationError):
@@ -64,8 +69,7 @@ async def _on_validation_error(request: Request, exc: RequestValidationError):
         field = str(error["loc"][-1])
         if field not in seen:  # one message per field is enough
             seen.add(field)
-            problems.append({"field": field,
-                             "message": FRIENDLY_MESSAGES.get(field, error["msg"])})
+            problems.append({"field": field, "message": FRIENDLY_MESSAGES.get(field, error["msg"])})
     return _reply(problems)
 
 

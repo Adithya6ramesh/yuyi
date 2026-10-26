@@ -79,11 +79,14 @@ def fetch_actuals():
     start_fresh(RAW_ACTUALS_DIR)
     total = 0
     for first_day, last_day in weekly_chunks(ACTUALS_FIRST_DAY, ACTUALS_LAST_DAY):
-        rows = get_with_retry(f"{BASE_URL}/FUELHH/stream", {
-            "settlementDateFrom": first_day.isoformat(),
-            "settlementDateTo": last_day.isoformat(),
-            "fuelType": "WIND",
-        })
+        rows = get_with_retry(
+            f"{BASE_URL}/FUELHH/stream",
+            {
+                "settlementDateFrom": first_day.isoformat(),
+                "settlementDateTo": last_day.isoformat(),
+                "fuelType": "WIND",
+            },
+        )
         save_json(rows, RAW_ACTUALS_DIR, first_day, last_day)
         print(f"    {first_day} -> {last_day}: {len(rows)} rows")
         total += len(rows)
@@ -99,12 +102,16 @@ def fetch_forecasts():
     print("Forecasts (WINDFOR):")
     start_fresh(RAW_FORECASTS_DIR)
     total = 0
-    for first_day, last_day in weekly_chunks(FORECASTS_FIRST_PUBLISH_DAY,
-                                             FORECASTS_LAST_PUBLISH_DAY):
-        rows = get_with_retry(f"{BASE_URL}/WINDFOR/stream", {
-            "publishDateTimeFrom": f"{first_day}T00:00:00Z",
-            "publishDateTimeTo": f"{last_day}T23:59:59Z",
-        })
+    for first_day, last_day in weekly_chunks(
+        FORECASTS_FIRST_PUBLISH_DAY, FORECASTS_LAST_PUBLISH_DAY
+    ):
+        rows = get_with_retry(
+            f"{BASE_URL}/WINDFOR/stream",
+            {
+                "publishDateTimeFrom": f"{first_day}T00:00:00Z",
+                "publishDateTimeTo": f"{last_day}T23:59:59Z",
+            },
+        )
         save_json(rows, RAW_FORECASTS_DIR, first_day, last_day)
         print(f"    published {first_day} -> {last_day}: {len(rows)} rows")
         total += len(rows)

@@ -23,7 +23,7 @@ prediction model of its own.
 ## 2. Architecture
 
 ```
- Elexon BMRS API ──(once, Phase 1)──▶ backend/data/raw/   (git-ignored)
+ Elexon BMRS API ──(downloaded once)──▶ backend/data/raw/   (git-ignored)
                                            │ clean + quality checks
                                            ▼
                                  backend/data/processed/*.parquet  (committed, < 120 KB)
@@ -345,6 +345,39 @@ native (generally available) FastAPI support. It's one Vercel project with **Roo
   React build from the CDN.
 - **Heroku** would run the container directly but has no free plan.
 - Docker is still proven on every push: CI builds and starts both images (see §9).
+
+**Live site:** <https://windhedge.vercel.app>
+
+**Security** (checked with a full audit):
+
+- **Headers:** every response carries security headers, set in `backend/vercel.json` for
+  Vercel and in `frontend/security-headers.conf` + `nginx.conf` for Docker:
+  - a strict **Content-Security-Policy**: only our own scripts run; styles and fonts also
+    from Google Fonts. `/docs` gets a slightly looser one, because Swagger UI loads from
+    cdn.jsdelivr.net;
+  - `X-Frame-Options: DENY` (no clickjacking);
+  - `X-Content-Type-Options: nosniff`;
+  - a `Referrer-Policy`;
+  - a `Permissions-Policy` (no camera, microphone or location).
+  - Vercel adds HTTPS-only (HSTS) and redirects http → https.
+- **CORS:** the API only accepts calls from other sites listed in `ALLOWED_ORIGINS`. On
+  Vercel the default is none (same address); locally it's the Vite dev server.
+- **Inputs:** every input is type- and range-checked (422 with a plain message).
+  - There's no database, no login, no user data and no file upload.
+  - Error pages don't show internals.
+  - The CSV export only contains numbers and dates, with a filename built from checked
+    inputs.
+- **Containers:** both run as non-root users.
+- **Secrets:** there are none in the code or the git history (checked), and `.env` files
+  are ignored.
+- **Dependencies:** pinned, and checked on every push by CI's `audit` job (`pip-audit` +
+  `npm audit`). The audit upgraded pyarrow (to 23.0.1), requests and pytest past known
+  vulnerabilities. The pyarrow one (a bug when reading Arrow IPC files) couldn't be
+  triggered here, because we only read our own Parquet files.
+- **CI:** its token is read-only (`permissions: contents: read`).
+- **Not done (not needed at this size):** rate limiting (Vercel's firewall can add it),
+  pinning GitHub Actions to exact commit IDs, and self-hosting the Google Fonts (visitors'
+  browsers contact Google to load them).
 
 **Deploying:**
 1. On vercel.com, choose Add New → Project and import the GitHub repository.

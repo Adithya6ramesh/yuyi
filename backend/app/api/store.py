@@ -10,6 +10,9 @@ Nothing here invents new maths. Every number comes from app/core/:
     metrics.py  -> miss, lean, wobble, breakdowns
     cushion.py  -> the safety cushion and the back-test
 
+The two slowest results are also saved to files (see precomputed.py), so a fresh copy of
+the API doesn't have to work them out first.
+
 Tables returned by the cached functions are SHARED between requests: never change
 them in place. between() hands out a copy, which is safe to change.
 """
@@ -20,6 +23,7 @@ from functools import cache
 
 import pandas as pd
 
+from app.api import precomputed
 from app.core.cushion import back_test, split_train_test
 from app.core.matching import build_comparison, build_decision_day_comparison
 from app.core.metrics import SLIDER_HOURS, summary
@@ -90,6 +94,15 @@ def comparison(mode, horizon):
 
 @cache
 def _comparison(mode, horizon):
+    if mode == "decision_day":  # slow (~1 s): use the saved copy if there is one
+        saved = precomputed.load(precomputed.DECISION_DAY_FILE)
+        if saved is not None:
+            return precomputed.table_from_json(saved)
+    return compute_comparison(mode, horizon)
+
+
+def compute_comparison(mode, horizon):
+    """The live calculation behind comparison() (also used to make the saved copy)."""
     actuals, forecasts = get("actuals"), get("forecasts")
     if mode == "decision_day":
         return build_decision_day_comparison(actuals, forecasts)
@@ -133,6 +146,15 @@ def horizon_curve(start, end):
 
 @cache
 def _horizon_curve(start, end):
+    if (start, end) == DATE_RANGES["horizon"]:  # the whole month: use the saved copy
+        saved = precomputed.load(precomputed.HORIZON_CURVE_FILE)
+        if saved is not None:
+            return saved
+    return compute_horizon_curve(start, end)
+
+
+def compute_horizon_curve(start, end):
+    """The live calculation behind horizon_curve() (also used to make the saved copy)."""
     return [
         {"hours_ahead": h, **summary(between(comparison("horizon", h), start, end))}
         for h in SLIDER_HOURS

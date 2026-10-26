@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gustline landing page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#050B08}
+a{color:#3EF0A0}a:hover{color:#9CFFD0}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.motion .marquee{animation:marquee 48s linear infinite}
+.motion .blink{animation:blink 1.1s steps(1) infinite}
+.row{transition:background .25s ease,padding-left .25s ease}
+.row:hover{background:#0A1912;padding-left:14px}
+.row:hover .arrow{color:#3EF0A0;transform:translateX(6px)}
+.arrow{display:inline-block;transition:transform .25s ease,color .25s ease}
+.ul{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.ul:hover{border-bottom-width:2px}
+.solid{transition:background .2s,color .2s}
+.solid:hover{background:#D8F5E4 !important;color:#050B08 !important}
+@media (max-width:760px){.hide-sm{display:none !important}}
+</style>
+</helmet>
+<div class="{{motionClass}}" style="background: #050B08; color: #D8F5E4; font-family: 'IBM Plex Sans', system-ui, sans-serif; min-height: 100vh; overflow-x: hidden">
+
+<!-- TOP BAR -->
+<header style="border-bottom: 1px solid #14281D">
+<nav style="max-width: 1320px; margin: 0 auto; padding: 16px 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase">
+<a href="#top" style="text-decoration: none; color: #D8F5E4; display: flex; gap: 10px; align-items: baseline"><span style="font-weight: 600; color: {{accent}}">✻ Gustline</span><span class="hide-sm" style="color: #7FA592">// wind forecast desk</span></a>
+<div class="hide-sm" style="display: flex; gap: 28px">
+<a href="#problem" style="color: #A9C9B8; text-decoration: none">[01] Problem</a>
+<a href="#method" style="color: #A9C9B8; text-decoration: none">[02] Method</a>
+<a href="#preview" style="color: #A9C9B8; text-decoration: none">[03] Preview</a>
+</div>
+<a class="solid" href="Dashboard.dc.html" style="color: #050B08; background: {{accent}}; text-decoration: none; padding: 12px 16px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center; font-weight: 600">Open the desk ↗</a>
+</nav>
+</header>
+
+<!-- HERO -->
+<section id="top" style="max-width: 1320px; margin: 0 auto; padding: 56px 28px 40px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center">
+<div style="flex: 1 1 500px; min-width: 0">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">▚ Day-ahead wind intelligence · Great Britain</div>
+<h1 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(60px, 8.6vw, 128px); line-height: 0.9; letter-spacing: -0.02em; margin: 28px 0 0">Tomorrow's wind, <em style="color: {{accent}}">priced&#160;in</em> today.</h1>
+<p style="font-size: 19px; line-height: 1.6; color: #A9C9B8; margin: 32px 0 0; max-width: 520px">Gustline shows your trading desk the wind forecast that existed when the order had to go in, how wrong that forecast has been, and how much margin to plan for.</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; margin-top: 40px; font-family: 'IBM Plex Mono', monospace; font-size: 15px">
+<a class="solid" href="Dashboard.dc.html" style="background: {{accent}}; color: #050B08; text-decoration: none; padding: 16px 22px; min-height: 52px; box-sizing: border-box; display: inline-flex; align-items: center; font-weight: 600">Open the desk →</a>
+<a class="ul" href="#method" style="color: #D8F5E4">Read the method</a>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 52px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #7FA592">
+<span>30-min resolution</span><span style="color: #2A4A3A">/</span><span>1,488 half-hours</span><span style="color: #2A4A3A">/</span><span>January 2026</span><span style="color: #2A4A3A">/</span><span>Elexon BMRS</span>
+</div>
+</div>
+
+<!-- 3D wireframe scene -->
+<div style="flex: 1 1 560px; min-width: 0; position: relative; height: 600px">
+<div style="position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-left: 1px solid {{accent}}; border-top: 1px solid {{accent}}"></div>
+<div style="position: absolute; right: 0; top: 0; width: 18px; height: 18px; border-right: 1px solid {{accent}}; border-top: 1px solid {{accent}}"></div>
+<div style="position: absolute; left: 0; bottom: 0; width: 18px; height: 18px; border-left: 1px solid {{accent}}; border-bottom: 1px solid {{accent}}"></div>
+<div style="position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; border-right: 1px solid {{accent}}; border-bottom: 1px solid {{accent}}"></div>
+<svg viewBox="0 0 840 620" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%">
+<path d="{{terrainPath}}" style="fill:none;stroke:{{accent}};stroke-width:0.8;stroke-opacity:0.32"></path>
+<path d="{{windPath}}" style="fill:none;stroke:#F5B547;stroke-width:1.6;stroke-linecap:round;stroke-opacity:0.85"></path>
+<path d="{{towerPath}}" style="fill:none;stroke:#D8F5E4;stroke-width:1;stroke-opacity:0.8"></path>
+<path d="{{bladesPath}}" style="fill:none;stroke:{{accent}};stroke-width:1.4;stroke-linejoin:round"></path>
+</svg>
+<div style="position: absolute; left: 28px; top: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.7; letter-spacing: 0.08em; color: #7FA592; text-transform: uppercase">Wind field · model view<br>Yaw {{yawDeg}}° · rotor {{rpm}} rpm</div>
+<div style="position: absolute; right: 28px; bottom: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.7; letter-spacing: 0.08em; color: #7FA592; text-align: right; text-transform: uppercase">54.0°N 2.0°W<br>T + 24h</div>
+</div>
+</section>
+
+<!-- TICKER -->
+<div style="border-top: 1px solid #14281D; border-bottom: 1px solid #14281D; overflow: hidden; background: #071009" aria-hidden="true">
+<div class="marquee" style="display: flex; width: max-content; padding: 14px 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592; white-space: nowrap">
+<span style="padding-right: 48px">FUELHH ◆ fuelType = WIND ◆ startTime ◆ generation (MW) ◆ WINDFOR ◆ publishTime ◆ latest forecast before T − H ◆ miss = actual − forecast ◆ p05 / p95 ◆ back-test on unseen days ◆ day-ahead market ◆</span>
+<span style="padding-right: 48px">FUELHH ◆ fuelType = WIND ◆ startTime ◆ generation (MW) ◆ WINDFOR ◆ publishTime ◆ latest forecast before T − H ◆ miss = actual − forecast ◆ p05 / p95 ◆ back-test on unseen days ◆ day-ahead market ◆</span>
+</div>
+</div>
+
+<!-- 01 PROBLEM -->
+<section id="problem" style="max-width: 1320px; margin: 0 auto; padding: 120px 28px 64px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; color: {{accent}}">[01] THE PROBLEM</div>
+<div style="display: flex; flex-wrap: wrap; gap: 56px; margin-top: 24px; align-items: flex-start">
+<div style="flex: 1 1 480px; min-width: 0">
+<h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(42px, 5.4vw, 80px); line-height: 0.95; letter-spacing: -0.02em; margin: 0">Wind is the cheapest power on the grid. It is also the <em>hardest</em> to plan for.</h2>
+<div style="margin-top: 48px; border-top: 1px solid #14281D">
+<div style="display: flex; gap: 24px; padding: 22px 0; border-bottom: 1px solid #14281D">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}; padding-top: 6px; flex: none">a.</span>
+<div><div style="font-family: 'Instrument Serif', serif; font-size: 28px">It changes its mind.</div><div style="font-size: 16px; line-height: 1.6; color: #A9C9B8; margin-top: 4px">Output swings by thousands of megawatts in a day. Orders go in the day before.</div></div>
+</div>
+<div style="display: flex; gap: 24px; padding: 22px 0; border-bottom: 1px solid #14281D">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}; padding-top: 6px; flex: none">b.</span>
+<div><div style="font-family: 'Instrument Serif', serif; font-size: 28px">Forecasts keep rewriting themselves.</div><div style="font-size: 16px; line-height: 1.6; color: #A9C9B8; margin-top: 4px">One half-hour gets many forecasts. Only those published before your deadline count.</div></div>
+</div>
+<div style="display: flex; gap: 24px; padding: 22px 0; border-bottom: 1px solid #14281D">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}; padding-top: 6px; flex: none">c.</span>
+<div><div style="font-family: 'Instrument Serif', serif; font-size: 28px">A single number hides the risk.</div><div style="font-size: 16px; line-height: 1.6; color: #A9C9B8; margin-top: 4px">Without a range, nobody knows how much margin to buy.</div></div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 460px; min-width: 0; padding-top: 12px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">One half-hour, many forecasts · example</div>
+<pre aria-label="Example: three forecasts for 10:00 on 5 January, published on 3, 4 and 5 January, compared with the actual value" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(11px, 1.15vw, 14px); line-height: 1.55; color: #A9C9B8; margin: 16px 0 0; white-space: pre; overflow-x: auto">{{convergence}}</pre>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #7FA592; margin-top: 18px">↳ the closer the deadline, the better the guess. But the order can't wait.</div>
+</div>
+</div>
+</section>
+
+<!-- FLOW FIELD -->
+<section style="border-top: 1px solid #14281D; border-bottom: 1px solid #14281D; background: #071009; overflow: hidden">
+<div style="max-width: 1320px; margin: 0 auto; padding: 22px 28px; display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">
+<span>Wind field, rendered as text</span><span>t = {{clock}}</span>
+</div>
+<pre aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.15; color: {{accent}}; opacity: 0.75; margin: 0 auto; padding: 0 28px 28px; max-width: 1320px; box-sizing: border-box; white-space: pre; overflow: hidden">{{flowField}}</pre>
+</section>
+
+<!-- 02 METHOD -->
+<section id="method" style="max-width: 1320px; margin: 0 auto; padding: 120px 28px 40px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; color: {{accent}}">[02] THE METHOD</div>
+<h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(42px, 5.4vw, 80px); line-height: 0.95; letter-spacing: -0.02em; margin: 24px 0 0; max-width: 900px">Three moves from raw data to a <em>confident</em> order.</h2>
+<pre aria-label="Pipeline: Elexon data flows into a matching step, then into measuring misses and building a cushion" style="font-family: 'IBM Plex Mono', monospace; font-size: clamp(11px, 1.35vw, 17px); line-height: 1.35; color: {{accent}}; margin: 64px 0 0; white-space: pre; overflow-x: auto">{{pipeline}}</pre>
+<div style="margin-top: 64px; border-top: 1px solid #14281D">
+<div style="display: flex; flex-wrap: wrap; gap: 16px 40px; padding: 30px 0; border-bottom: 1px solid #14281D">
+<div style="flex: 0 0 120px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">STEP 01</div>
+<div style="flex: 1 1 320px; min-width: 0"><div style="font-family: 'Instrument Serif', serif; font-size: 32px">Collect the official data</div><div style="font-size: 16px; line-height: 1.6; color: #A9C9B8; margin-top: 6px">Actual wind output and every published forecast, downloaded once, cleaned and checked for gaps.</div></div>
+<code style="flex: 1 1 320px; min-width: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #7FA592; align-self: center">GET /datasets/FUELHH/stream · fuelType=WIND</code>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px 40px; padding: 30px 0; border-bottom: 1px solid #14281D">
+<div style="flex: 0 0 120px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">STEP 02</div>
+<div style="flex: 1 1 320px; min-width: 0"><div style="font-family: 'Instrument Serif', serif; font-size: 32px">Pick the forecast you'd really have had</div><div style="font-size: 16px; line-height: 1.6; color: #A9C9B8; margin-top: 6px">For each half-hour, the latest forecast published before your deadline. Anything later is ignored.</div></div>
+<code style="flex: 1 1 320px; min-width: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #7FA592; align-self: center">forecast(T) = latest where publishTime ≤ T − H</code>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px 40px; padding: 30px 0; border-bottom: 1px solid #14281D">
+<div style="flex: 0 0 120px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">STEP 03</div>
+<div style="flex: 1 1 320px; min-width: 0"><div style="font-family: 'Instrument Serif', serif; font-size: 32px">Measure, then plan a cushion</div><div style="font-size: 16px; line-height: 1.6; color: #A9C9B8; margin-top: 6px">Every miss is recorded. The bad days become a safety margin, tested on days it never saw.</div></div>
+<code style="flex: 1 1 320px; min-width: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #7FA592; align-self: center">miss = actual − forecast · cushion = p05(miss)</code>
+</div>
+</div>
+</section>
+
+<!-- WHAT THE DESK DOES -->
+<section style="max-width: 1320px; margin: 0 auto; padding: 80px 28px 40px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; color: {{accent}}">WHAT THE DESK DOES</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #7FA592">4 tools · 1 screen</div>
+</div>
+<div style="margin-top: 24px; border-top: 1px solid #D8F5E4">
+<a class="row" href="Dashboard.dc.html" style="display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid #14281D; text-decoration: none; color: #D8F5E4">
+<span style="flex: 1 1 380px; font-family: 'Instrument Serif', serif; font-size: clamp(30px, 3.4vw, 46px)">Forecast at decision time</span>
+<span style="flex: 1 1 380px; font-size: 16px; line-height: 1.6; color: #A9C9B8">What the forecast said when the order was due, not the hindsight version.</span>
+<span class="arrow" style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: #7FA592">→</span>
+</a>
+<a class="row" href="Dashboard.dc.html" style="display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid #14281D; text-decoration: none; color: #D8F5E4">
+<span style="flex: 1 1 380px; font-family: 'Instrument Serif', serif; font-size: clamp(30px, 3.4vw, 46px)">Accuracy, in plain numbers</span>
+<span style="flex: 1 1 380px; font-size: 16px; line-height: 1.6; color: #A9C9B8">Average miss, worst miss, and whether forecasts lean too high or too low.</span>
+<span class="arrow" style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: #7FA592">→</span>
+</a>
+<a class="row" href="Dashboard.dc.html" style="display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid #14281D; text-decoration: none; color: #D8F5E4">
+<span style="flex: 1 1 380px; font-family: 'Instrument Serif', serif; font-size: clamp(30px, 3.4vw, 46px)">A safety cushion</span>
+<span style="flex: 1 1 380px; font-size: 16px; line-height: 1.6; color: #A9C9B8">A realistic range around every forecast, at the caution level you choose.</span>
+<span class="arrow" style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: #7FA592">→</span>
+</a>
+<a class="row" href="Dashboard.dc.html" style="display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid #14281D; text-decoration: none; color: #D8F5E4">
+<span style="flex: 1 1 380px; font-family: 'Instrument Serif', serif; font-size: clamp(30px, 3.4vw, 46px)">Proof it holds up</span>
+<span style="flex: 1 1 380px; font-size: 16px; line-height: 1.6; color: #A9C9B8">The cushion is checked against a week of days it never learned from.</span>
+<span class="arrow" style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: #7FA592">→</span>
+</a>
+</div>
+</section>
+
+<!-- 03 PREVIEW -->
+<section id="preview" style="max-width: 1320px; margin: 0 auto; padding: 120px 28px 80px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em; color: {{accent}}">[03] PREVIEW</div>
+<h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(42px, 5.4vw, 80px); line-height: 0.95; letter-spacing: -0.02em; margin: 24px 0 0; max-width: 900px">Forecast, reality, and the <em>range</em> in between.</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 0; margin-top: 56px; border-top: 1px solid #14281D; border-bottom: 1px solid #14281D">
+<div style="flex: 3 1 560px; min-width: 0; padding: 28px 28px 28px 0; box-sizing: border-box">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #7FA592">
+<span>GB wind · 14–15 Jan 2026 · 24 h ahead · illustrative</span>
+<span style="display: flex; gap: 18px"><span style="color: {{accent}}">━ actual</span><span style="color: #F5B547">╍ forecast</span><span>░ 90% range</span></span>
+</div>
+<svg viewBox="0 0 1000 300" role="img" aria-label="Line chart comparing actual wind output with the forecast and its safety range over two days" style="width: 100%; height: auto; margin-top: 18px">
+<path d="M56 264 H984 M56 196.2 H984 M56 128.4 H984 M56 60.7 H984" style="stroke:#14281D;stroke-width:1"></path>
+<text x="46" y="268" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">0</text>
+<text x="46" y="200" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">5GW</text>
+<text x="46" y="132" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">10GW</text>
+<text x="46" y="65" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">15GW</text>
+<path d="{{bandPath}}" style="fill:{{accentSoft}}"></path>
+<path d="{{forecastPath}}" style="fill:none;stroke:#F5B547;stroke-width:2;stroke-dasharray:6 5"></path>
+<path d="{{actualPath}}" style="fill:none;stroke:{{accent}};stroke-width:2.6;stroke-linejoin:round"></path>
+<circle cx="{{cursorX}}" cy="{{cursorY}}" r="5" style="fill:#050B08;stroke:{{accent}};stroke-width:2"></circle>
+<path d="{{cursorLine}}" style="stroke:{{accent}};stroke-width:1;stroke-dasharray:2 4;stroke-opacity:.6"></path>
+<text x="56" y="290" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace">14 JAN</text>
+<text x="524.8" y="290" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:middle">15 JAN</text>
+<text x="984" y="290" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">16 JAN</text>
+</svg>
+</div>
+<div style="flex: 2 1 380px; min-width: 0; padding: 28px 0 28px 28px; border-left: 1px solid #14281D; box-sizing: border-box">
+<pre style="font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.75; color: #A9C9B8; margin: 0; white-space: pre-wrap">{{readout}}<span class="blink" style="color: {{accent}}">█</span></pre>
+</div>
+</div>
+</section>
+
+<!-- CTA -->
+<section style="border-top: 1px solid #14281D; background: #071009">
+<div style="max-width: 1320px; margin: 0 auto; padding: 96px 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 48px">
+<pre aria-hidden="true" style="flex: 1 1 460px; min-width: 0; font-family: 'IBM Plex Mono', monospace; font-size: clamp(11px, 1.2vw, 15px); line-height: 1.12; color: {{accent}}; margin: 0; white-space: pre; overflow: hidden">{{asciiTurbine}}</pre>
+<div style="flex: 1 1 440px; min-width: 0">
+<h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(48px, 6vw, 92px); line-height: 0.92; letter-spacing: -0.02em; margin: 0">See tomorrow's wind <em style="color: {{accent}}">before</em> you buy.</h2>
+<p style="font-size: 18px; line-height: 1.6; color: #A9C9B8; margin: 24px 0 0; max-width: 460px">Explore January 2026 on the desk, or walk through it with our team.</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; margin-top: 36px; font-family: 'IBM Plex Mono', monospace; font-size: 15px">
+<a class="solid" href="Dashboard.dc.html" style="background: {{accent}}; color: #050B08; text-decoration: none; padding: 16px 22px; min-height: 52px; box-sizing: border-box; display: inline-flex; align-items: center; font-weight: 600">Open the desk →</a>
+<a class="ul" href="#top" style="color: #D8F5E4">Book a walkthrough</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top: 1px solid #14281D">
+<div style="max-width: 1320px; margin: 0 auto; padding: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #7FA592">
+<span style="color: {{accent}}">✻ Gustline</span>
+<span>Data · Elexon BMRS · FUELHH + WINDFOR</span>
+<span>React · Python</span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#3EF0A0","options":["#3EF0A0","#7CF5C8","#B8F36B","#2DD4BF"]},"motion":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":5000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { t: 0 };
+  }
+  componentDidMount() {
+    let reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    const start = performance.now();
+    let last = 0;
+    const loop = (now) => {
+      this._raf = requestAnimationFrame(loop);
+      if (reduce || (this.props.motion ?? true) === false) return;
+      if (now - last < 50) return;
+      last = now;
+      this.setState({ t: (now - start) / 1000 });
+    };
+    this._raf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this._raf); }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#3EF0A0';
+    const motion = this.props.motion ?? true;
+    const hex = accent.replace('#', '');
+    const r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
+    const accentSoft = 'rgba(' + r + ',' + g + ',' + b + ',0.15)';
+    const t = (this.state.t || 0) + 4;
+
+    // ---------- 3D wireframe scene ----------
+    const yaw = 0.75 + t * 0.12, pitch = 0.42, D = 14, F = 560, CX = 420, CY = 410;
+    const cyw = Math.cos(yaw), syw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const P = (x, y, z) => {
+      const x1 = x * cyw - z * syw, z1 = x * syw + z * cyw;
+      const y2 = y * cp + z1 * sp, z2 = -y * sp + z1 * cp;
+      const s = F / (z2 + D);
+      return (CX + x1 * s).toFixed(1) + ' ' + (CY - y2 * s).toFixed(1);
+    };
+    const poly = (pts) => 'M' + pts.join(' L');
+    const hgt = (x, z) => -0.5 + 0.32 * Math.sin(x * 0.75 + t * 1.1) * Math.cos(z * 0.55 - t * 0.6) + 0.18 * Math.sin((x - z) * 1.1 + t * 1.7);
+    let terrain = '';
+    const n = 20, step = 0.6;
+    for (let j = 0; j <= n; j++) {
+      const z = -6 + j * step, row = [];
+      for (let i = 0; i <= n; i++) { const x = -6 + i * step; row.push(P(x, hgt(x, z), z)); }
+      terrain += poly(row) + ' ';
+    }
+    for (let i = 0; i <= n; i++) {
+      const x = -6 + i * step, col = [];
+      for (let j = 0; j <= n; j++) { const z = -6 + j * step; col.push(P(x, hgt(x, z), z)); }
+      terrain += poly(col) + ' ';
+    }
+    // tower
+    let tower = '';
+    const rings = [-0.5, 1.0, 2.5, 4.15];
+    const rad = (y) => 0.24 - 0.025 * (y + 0.5);
+    const seg = 8;
+    rings.forEach((y) => {
+      const pts = [];
+      for (let k = 0; k <= seg; k++) { const a = k / seg * Math.PI * 2; pts.push(P(Math.cos(a) * rad(y), y, Math.sin(a) * rad(y))); }
+      tower += poly(pts) + ' ';
+    });
+    for (let k = 0; k < seg; k += 2) {
+      const a = k / seg * Math.PI * 2;
+      tower += poly(rings.map((y) => P(Math.cos(a) * rad(y), y, Math.sin(a) * rad(y)))) + ' ';
+    }
+    // nacelle box
+    const bx = [-0.22, 0.22], by = [4.1, 4.45], bz = [-0.7, 0.35];
+    const c = (i, j, k) => P(bx[i], by[j], bz[k]);
+    tower += poly([c(0,0,0), c(1,0,0), c(1,1,0), c(0,1,0), c(0,0,0)]) + ' ';
+    tower += poly([c(0,0,1), c(1,0,1), c(1,1,1), c(0,1,1), c(0,0,1)]) + ' ';
+    tower += poly([c(0,0,0), c(0,0,1)]) + ' ' + poly([c(1,0,0), c(1,0,1)]) + ' ' + poly([c(1,1,0), c(1,1,1)]) + ' ' + poly([c(0,1,0), c(0,1,1)]) + ' ';
+    // blades
+    const hub = [0, 4.28, 0.5];
+    let blades = '';
+    const hubPts = [];
+    for (let k = 0; k <= 8; k++) { const a = k / 8 * Math.PI * 2; hubPts.push(P(hub[0] + Math.cos(a) * 0.16, hub[1] + Math.sin(a) * 0.16, hub[2])); }
+    blades += poly(hubPts) + ' ';
+    const spin = t * 1.3;
+    for (let k = 0; k < 3; k++) {
+      const a = spin + k * Math.PI * 2 / 3;
+      const dx = Math.cos(a), dy = Math.sin(a), px = -dy, py = dx;
+      const at = (along, side) => P(hub[0] + dx * along + px * side, hub[1] + dy * along + py * side, hub[2]);
+      blades += poly([at(0.16, 0.08), at(0.9, 0.2), at(2.9, 0.02), at(0.9, -0.07), at(0.16, -0.06), at(0.16, 0.08)]) + ' ';
+      blades += poly([at(0.16, 0), at(2.9, 0)]) + ' ';
+    }
+    // wind streaks
+    let wind = '';
+    for (let k = 0; k < 9; k++) {
+      const z = -5 + k * 1.25;
+      const x = ((t * 2.2 + k * 1.7) % 13) - 6.5;
+      const y = 1.4 + 0.9 * Math.sin(k * 1.9) + 0.15 * Math.sin(t * 2 + k);
+      const pts = [];
+      for (let s = 0; s <= 4; s++) { const xx = x + s * 0.3; pts.push(P(xx, y + 0.08 * Math.sin(xx * 2 + t * 3), z)); }
+      wind += poly(pts) + ' ';
+    }
+    const yawDeg = String(Math.round(((yaw * 180 / Math.PI) % 360 + 360) % 360)).padStart(3, '0');
+    const rpm = (1.3 / (2 * Math.PI) * 60).toFixed(1);
+
+    // ---------- ASCII flow field ----------
+    const ramp = ' .,:-~=+*#';
+    const cols = 132, rowsN = 12;
+    const lines = [];
+    for (let y = 0; y < rowsN; y++) {
+      let s = '';
+      for (let x = 0; x < cols; x++) {
+        const v = Math.sin(x * 0.11 + t * 1.5 + Math.sin(y * 0.45 + t * 0.3) * 1.4) + 0.7 * Math.sin(y * 0.38 - t * 0.8 + x * 0.04);
+        let idx = Math.floor((v + 1.7) / 3.4 * ramp.length);
+        idx = Math.max(0, Math.min(ramp.length - 1, idx));
+        s += ramp[idx];
+      }
+      lines.push(s);
+    }
+    const flowField = lines.join('\n');
+    const clock = t.toFixed(1).padStart(6, ' ') + 's';
+
+    // ---------- convergence table (static example) ----------
+    const convergence = [
+      'target      05 JAN · 10:00',
+      '─────────────────────────────────────────────',
+      'published        forecast',
+      '03 JAN 09:00   15,000 MW  ███████████████',
+      '04 JAN 08:00   13,500 MW  █████████████▌',
+      '05 JAN 06:00   12,300 MW  ████████████▎',
+      '─────────────────────────────────────────────',
+      'actual         11,200 MW  ███████████▏'
+    ].join('\n');
+
+    // ---------- pipeline with moving packet ----------
+    const center = (s) => { const w = 11; const l = Math.floor((w - s.length) / 2); return ' '.repeat(l) + s + ' '.repeat(w - s.length - l); };
+    const top = '┌───────────┐', bot = '└───────────┘', gap = '          ';
+    const p = Math.floor(t * 8) % 20;
+    const conn = (on) => { const a = '─────────'.split(''); a.push('▶'); if (on >= 0 && on < 9) a[on] = '●'; return a.join(''); };
+    const c1 = p < 10 ? p : -1, c2 = p >= 10 ? p - 10 : -1;
+    const box = (s) => '│' + center(s) + '│';
+    const pipeline = [
+      top + gap + top + gap + top,
+      box('ELEXON') + gap + box('MATCH') + gap + box('MEASURE'),
+      box('actuals +') + conn(c1) + box('latest') + conn(c2) + box('miss +'),
+      box('forecasts') + gap + box('before T−H') + gap + box('cushion'),
+      bot + gap + bot + gap + bot
+    ].join('\n');
+
+    // ---------- ASCII turbine ----------
+    const W = 60, H = 24, hx = 30, hy = 8;
+    const grid = [];
+    for (let y = 0; y < H; y++) grid.push(new Array(W).fill(' '));
+    [2, 5, 13, 16].forEach((ry, k) => {
+      const off = Math.floor(t * (5 + k) + ry * 7) % W;
+      for (const base of [off, (off + 30) % W]) {
+        for (let q = 0; q < 5; q++) grid[ry][(base + q) % W] = q % 2 ? '~' : '-';
+      }
+    });
+    for (let y = hy + 1; y < H - 2; y++) { grid[y][hx] = '║'; }
+    for (let y = H - 7; y < H - 2; y++) { grid[y][hx - 1] = '/'; grid[y][hx + 1] = '\\'; }
+    const ground = '▁▁▂▃▂▁▁▁▂▂▁';
+    for (let x = 0; x < W; x++) grid[H - 2][x] = ground[x % ground.length];
+    grid[H - 2][hx - 1] = '▟'; grid[H - 2][hx] = '█'; grid[H - 2][hx + 1] = '▙';
+    for (let k = 0; k < 3; k++) {
+      const a = t * 1.8 + k * Math.PI * 2 / 3;
+      const d = ((a % Math.PI) + Math.PI) % Math.PI;
+      let ch = '-';
+      if (d < Math.PI / 8 || d > Math.PI * 7 / 8) ch = '-';
+      else if (Math.abs(d - Math.PI / 2) < Math.PI / 8) ch = '|';
+      else if (d < Math.PI / 2) ch = '/';
+      else ch = '\\';
+      for (let s = 1; s <= 9; s++) {
+        const x = hx + Math.round(Math.cos(a) * s * 2.1), y = hy - Math.round(Math.sin(a) * s);
+        if (y >= 0 && y < H - 2 && x >= 0 && x < W) grid[y][x] = s === 9 ? '◦' : ch;
+      }
+    }
+    grid[hy][hx - 1] = '('; grid[hy][hx] = '@'; grid[hy][hx + 1] = ')';
+    const asciiTurbine = grid.map((rw) => rw.join('')).join('\n');
+
+    // ---------- preview chart ----------
+    const N = 96, h24 = 24, A = [], Fc = [];
+    for (let i = 0; i < N; i++) {
+      const act = 9200 + 3800 * Math.sin(i / 15) + 1700 * Math.sin(i / 5.3 + 1) + 550 * Math.sin(i / 2.1);
+      const k = h24 / 24;
+      const err = k * (1300 * Math.sin(i / 8.7 + 2) + 650 * Math.sin(i / 3.6)) + 260 * Math.sin(i / 1.9) + 230 * k;
+      A.push(act); Fc.push(act + err);
+    }
+    const X = (i) => 56 + i * 928 / (N - 1);
+    const Y = (v) => 20 + (1 - Math.max(0, Math.min(18000, v)) / 18000) * 244;
+    const line = (arr) => 'M' + arr.map((v, i) => X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join(' L');
+    const sd = 380 + 30 * h24, z = 1.64;
+    const hi = Fc.map((v) => v + z * sd * 0.9), lo = Fc.map((v) => v - z * sd * 1.1);
+    let band = 'M' + hi.map((v, i) => X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join(' L');
+    for (let i = N - 1; i >= 0; i--) band += ' L' + X(i).toFixed(1) + ' ' + Y(lo[i]).toFixed(1);
+    band += ' Z';
+    const ci = Math.floor(t * 6) % N;
+    const cursorX = X(ci).toFixed(1), cursorY = Y(A[ci]).toFixed(1);
+    const cursorLine = 'M' + cursorX + ' 20 V264';
+    const fmt = (v) => Math.round(v).toLocaleString('en-GB');
+    const hh = String(Math.floor((ci % 48) / 2)).padStart(2, '0') + ':' + (ci % 2 ? '30' : '00');
+    const day = ci < 48 ? '14 JAN' : '15 JAN';
+
+    const readout = [
+      'gustline$ evaluate --month 2026-01 --ahead 24h',
+      '── sample output ─────────────────────────',
+      'cursor ................ ' + day + ' ' + hh,
+      'actual ................ ' + fmt(A[ci]) + ' MW',
+      'forecast .............. ' + fmt(Fc[ci]) + ' MW',
+      'miss .................. ' + (A[ci] - Fc[ci] >= 0 ? '+' : '−') + fmt(Math.abs(A[ci] - Fc[ci])) + ' MW',
+      '',
+      'half-hours checked .... 1,488',
+      'forecast leans ........ too high',
+      'cushion @ 90% ......... ' + fmt(Math.round(z * sd * 1.1 / 50) * 50) + ' MW',
+      'back-test coverage .... 87%',
+      'gustline$ '
+    ].join('\n');
+
+    return {
+      accent, accentSoft,
+      motionClass: motion ? 'motion' : 'still',
+      terrainPath: terrain, towerPath: tower, bladesPath: blades, windPath: wind,
+      yawDeg, rpm,
+      flowField, clock, convergence, pipeline, asciiTurbine,
+      actualPath: line(A), forecastPath: line(Fc), bandPath: band,
+      cursorX, cursorY, cursorLine, readout
+    };
+  }
+}
+</script>
+</body>
+</html>

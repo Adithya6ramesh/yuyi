@@ -1,0 +1,42 @@
+/*
+  DESIGN TOKENS: every colour and font in ONE place.
+  Change a colour here and it changes everywhere. Components use var(--name).
+*/
+:root {
+  /* backgrounds */
+  --bg: #050b08;          /* page */
+  --bg-alt: #071009;      /* alternate bands (ticker, wind field, CTA) */
+  --bg-hover: #0a1912;    /* row hover */
+
+  /* lines */
+  --line: #14281d;        /* hairline dividers */
+  --line-strong: #2a4a3a; /* input underlines, separators */
+
+  /* text */
+  --text: #d8f5e4;
+  --muted: #a9c9b8;       /* body text on dark */
+  --muted-2: #7fa592;     /* labels, captions */
+
+  /* meaning colours */
+  --accent: #3ef0a0;      /* actual wind, buttons, highlights */
+  --accent-hover: #9cffd0;
+  --accent-soft: rgba(62, 240, 160, 0.15); /* the shaded safety range */
+  --forecast: #f5b547;    /* the forecast (amber) */
+  --shortfall: #ffb4a3;   /* less wind than forecast (the costly side) */
+  --warn: #f5d38a;        /* "below target" notes */
+
+  /* fonts */
+  --serif: 'Instrument Serif', Georgia, serif;          /* big headings, italic accents */
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;     /* labels, numbers, ASCII */
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;       /* body text */
+
+  /* layout */
+  --page-max: 1320px;
+  --gutter: 28px;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --gutter: 16px;
+  }
+}

@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gustline desk</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#050B08}
+a{color:#3EF0A0}a:hover{color:#9CFFD0}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.motion .blink{animation:blink 1.1s steps(1) infinite}
+.nav a{transition:background .2s,color .2s}
+.nav a:hover{background:#0A1912;color:#D8F5E4}
+.solid{transition:background .2s,color .2s}
+.solid:hover{background:#D8F5E4 !important;color:#050B08 !important}
+.tog{transition:background .2s,color .2s}
+.tog:hover{color:#D8F5E4}
+input[type=range]{accent-color:#3EF0A0;width:100%;height:28px;cursor:pointer;margin:0}
+</style>
+</helmet>
+<div class="{{motionClass}}" style="background: #050B08; color: #D8F5E4; font-family: 'IBM Plex Sans', system-ui, sans-serif; min-height: 100vh; display: flex; flex-wrap: wrap; align-items: stretch">
+
+<!-- SIDEBAR -->
+<aside style="flex: 1 1 250px; max-width: 100%; box-sizing: border-box; border-right: 1px solid #14281D; display: flex; flex-direction: column">
+<a href="Main.dc.html" style="display: block; padding: 22px 22px 20px; border-bottom: 1px solid #14281D; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: #3EF0A0; font-weight: 600">✻ Gustline <span style="color: #7FA592; font-weight: 400">desk</span></a>
+<nav class="nav" aria-label="Desk sections" style="display: flex; flex-direction: column; font-family: 'IBM Plex Mono', monospace; font-size: 14px">
+<a href="#overview" style="display: flex; gap: 14px; padding: 14px 22px; min-height: 44px; box-sizing: border-box; text-decoration: none; color: #050B08; background: #3EF0A0"><span>01</span>Overview</a>
+<a href="#decision" style="display: flex; gap: 14px; padding: 14px 22px; min-height: 44px; box-sizing: border-box; text-decoration: none; color: #A9C9B8"><span style="color: #7FA592">02</span>Decision day</a>
+<a href="#accuracy" style="display: flex; gap: 14px; padding: 14px 22px; min-height: 44px; box-sizing: border-box; text-decoration: none; color: #A9C9B8"><span style="color: #7FA592">03</span>Accuracy</a>
+<a href="#cushion" style="display: flex; gap: 14px; padding: 14px 22px; min-height: 44px; box-sizing: border-box; text-decoration: none; color: #A9C9B8"><span style="color: #7FA592">04</span>Safety cushion</a>
+<a href="#checks" style="display: flex; gap: 14px; padding: 14px 22px; min-height: 44px; box-sizing: border-box; text-decoration: none; color: #A9C9B8"><span style="color: #7FA592">05</span>Data checks</a>
+</nav>
+<div style="margin-top: auto; border-top: 1px solid #14281D; padding: 18px 22px 22px">
+<div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #7FA592"><span>Wind field</span><span>{{spinner}}</span></div>
+<svg viewBox="0 0 260 150" aria-hidden="true" style="width: 100%; height: auto; margin-top: 8px">
+<path d="{{meshPath}}" style="fill:none;stroke:#3EF0A0;stroke-width:0.7;stroke-opacity:0.55"></path>
+</svg>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.6; color: #7FA592; margin-top: 8px">Source · Elexon BMRS<br>FUELHH + WINDFOR</div>
+</div>
+</aside>
+
+<!-- MAIN -->
+<main id="overview" style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; display: flex; flex-direction: column">
+
+<!-- header -->
+<div style="padding: 26px clamp(16px, 3vw, 40px) 22px; border-bottom: 1px solid #14281D; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Desk / January 2026 / Wind</div>
+<h1 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(34px, 4vw, 54px); line-height: 1; letter-spacing: -0.01em; margin: 10px 0 0">How far can you trust the <em style="color: #3EF0A0">forecast</em>?</h1>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 13px">
+<span style="padding: 10px 12px; border: 1px solid #5A4A1A; color: #F5D38A; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px">Sample data</span>
+<button class="solid" type="button" style="background: #3EF0A0; color: #050B08; border: 0; padding: 12px 16px; min-height: 44px; font: 600 13px 'IBM Plex Mono', monospace; cursor: pointer">↓ Export CSV</button>
+</div>
+</div>
+
+<!-- controls -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); border-bottom: 1px solid #14281D">
+<div style="padding: 20px clamp(16px, 3vw, 40px); border-right: 1px solid #14281D">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Delivery dates</div>
+<button type="button" style="margin-top: 12px; width: 100%; text-align: left; padding: 10px 0; min-height: 44px; background: transparent; border: 0; border-bottom: 1px solid #2A4A3A; color: #D8F5E4; font: 500 15px 'IBM Plex Mono', monospace; cursor: pointer">14 JAN → 15 JAN 2026 ▾</button>
+</div>
+<div style="padding: 20px clamp(16px, 3vw, 40px); border-right: 1px solid #14281D">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<label for="horizon" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Forecast made ≥</label>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; color: #3EF0A0">{{horizon}}h ahead</span>
+</div>
+<div style="margin-top: 12px"><input id="horizon" type="range" min="1" max="48" step="1" value="{{horizon}}" onChange="{{onHorizon}}"></div>
+<div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7FA592"><span>1h</span><span>24h</span><span>48h</span></div>
+</div>
+<div style="padding: 20px clamp(16px, 3vw, 40px)">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Caution level</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; border: 1px solid #2A4A3A">
+<sc-for list="{{confOptions}}" as="opt" hint-placeholder-count="3">
+<button class="tog" type="button" onClick="{{opt.pick}}" aria-pressed="{{opt.pressed}}" style="border: 0; padding: 8px 4px; min-height: 48px; cursor: pointer; background: {{opt.bg}}; color: {{opt.fg}}; font: 600 14px 'IBM Plex Mono', monospace; display: flex; flex-direction: column; align-items: center; gap: 1px">{{opt.label}}<span style="font-size: 10px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase">{{opt.sub}}</span></button>
+</sc-for>
+</div>
+</div>
+</div>
+
+<!-- readouts -->
+<div id="cushion" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-bottom: 1px solid #14281D">
+<div style="padding: 24px clamp(16px, 3vw, 40px); border-right: 1px solid #14281D">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Average miss</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; margin-top: 10px">{{avgMiss}}<span style="font-size: 14px; color: #7FA592"> MW</span></div>
+<div style="font-size: 13px; color: #A9C9B8; margin-top: 6px">Typical gap, forecast vs reality</div>
+</div>
+<div style="padding: 24px clamp(16px, 3vw, 40px); border-right: 1px solid #14281D">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Worst shortfall</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; margin-top: 10px; color: #FFB4A3">−{{worst}}<span style="font-size: 14px; color: #7FA592"> MW</span></div>
+<div style="font-size: 13px; color: #A9C9B8; margin-top: 6px">Biggest half-hour the wind fell short</div>
+</div>
+<div style="padding: 24px clamp(16px, 3vw, 40px); border-right: 1px solid #14281D">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Forecast leans</div>
+<div style="font-family: 'Instrument Serif', serif; font-size: 38px; margin-top: 6px; color: #F5B547">{{biasLabel}}</div>
+<div style="font-size: 13px; color: #A9C9B8; margin-top: 4px">{{biasNote}}</div>
+</div>
+<div style="padding: 24px clamp(16px, 3vw, 40px); background: #3EF0A0; color: #050B08">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase">Plan for less wind by</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; margin-top: 10px; font-weight: 600">{{cushion}}<span style="font-size: 14px; font-weight: 400"> MW</span></div>
+<div style="font-size: 13px; margin-top: 6px">Safety cushion at {{conf}}% caution</div>
+</div>
+</div>
+
+<!-- chart -->
+<div style="padding: 26px clamp(16px, 3vw, 40px); border-bottom: 1px solid #14281D">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #7FA592">
+<span>GB wind output · every 30 min · forecasts made {{horizon}}h ahead</span>
+<span style="display: flex; flex-wrap: wrap; gap: 18px"><span style="color: #3EF0A0">━ actual</span><span style="color: #F5B547">╍ forecast</span><span>░ {{conf}}% range</span></span>
+</div>
+<svg viewBox="0 0 1000 300" role="img" aria-label="Line chart of actual wind output, the forecast and the safety range over two days" style="width: 100%; height: auto; margin-top: 16px">
+<path d="M56 264 H984 M56 196.2 H984 M56 128.4 H984 M56 60.7 H984" style="stroke:#14281D;stroke-width:1"></path>
+<text x="46" y="268" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">0</text>
+<text x="46" y="200" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">5GW</text>
+<text x="46" y="132" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">10GW</text>
+<text x="46" y="65" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">15GW</text>
+<path d="{{bandPath}}" style="fill:rgba(62,240,160,.15)"></path>
+<path d="{{forecastPath}}" style="fill:none;stroke:#F5B547;stroke-width:2;stroke-dasharray:6 5"></path>
+<path d="{{actualPath}}" style="fill:none;stroke:#3EF0A0;stroke-width:2.6;stroke-linejoin:round"></path>
+<path d="M524.8 20 V264" style="stroke:#2A4A3A;stroke-width:1;stroke-dasharray:3 4"></path>
+<text x="532" y="34" style="fill:#7FA592;font-size:11px;font-family:'IBM Plex Mono',monospace">▸ DECISION DAY REPLAYED BELOW</text>
+<text x="56" y="290" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace">14 JAN</text>
+<text x="524.8" y="290" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:middle">15 JAN</text>
+<text x="984" y="290" style="fill:#7FA592;font-size:12px;font-family:'IBM Plex Mono',monospace;text-anchor:end">16 JAN</text>
+</svg>
+</div>
+
+<!-- accuracy: ASCII bars -->
+<div id="accuracy" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); border-bottom: 1px solid #14281D">
+<div style="padding: 26px clamp(16px, 3vw, 40px); border-right: 1px solid #14281D; min-width: 0">
+<h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 28px; margin: 0">The miss grows the further ahead you look</h2>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #7FA592; margin-top: 6px">Average miss (MW) by lead time</div>
+<div style="margin-top: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.9; overflow-x: auto">
+<sc-for list="{{horizonBars}}" as="b" hint-placeholder-count="7">
+<div style="display: flex; gap: 12px; white-space: pre; color: {{b.color}}"><span style="width: 36px; text-align: right">{{b.label}}</span><span>{{b.bar}}</span><span>{{b.val}}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="padding: 26px clamp(16px, 3vw, 40px); min-width: 0">
+<h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 28px; margin: 0">When is the forecast shakiest?</h2>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #7FA592; margin-top: 6px">Average miss (MW) by time of day · {{horizon}}h ahead</div>
+<div style="margin-top: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.6; overflow-x: auto">
+<sc-for list="{{todBars}}" as="b" hint-placeholder-count="8">
+<div style="display: flex; gap: 12px; white-space: pre; color: {{b.color}}"><span style="width: 48px; text-align: right">{{b.label}}</span><span>{{b.bar}}</span><span>{{b.val}}</span></div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<!-- decision / backtest / summary -->
+<div id="decision" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); border-bottom: 1px solid #14281D">
+<div style="padding: 26px clamp(16px, 3vw, 40px); border-right: 1px solid #14281D; min-width: 0; background: #071009">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592">Decision day replay</div>
+<pre style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; color: #A9C9B8; margin: 14px 0 0; white-space: pre; overflow-x: auto">{{replay}}</pre>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7FA592; margin-top: 28px">Does the range hold up? · built 1–24 Jan, tested 25–31 Jan</div>
+<pre aria-label="Back-test coverage bar" style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; line-height: 1.6; color: #3EF0A0; margin: 12px 0 0; white-space: pre; overflow-x: auto">{{backtest}}</pre>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{verdictColor}}; margin-top: 8px">{{verdict}}</div>
+</div>
+<div style="padding: 26px clamp(16px, 3vw, 40px); min-width: 0">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #3EF0A0">In plain English</div>
+<p style="font-family: 'Instrument Serif', serif; font-size: clamp(26px, 2.4vw, 34px); line-height: 1.25; margin: 16px 0 0">{{summary}}<span class="blink" style="color: #3EF0A0">▍</span></p>
+</div>
+</div>
+
+<!-- data checks -->
+<div id="checks" style="display: flex; flex-wrap: wrap; gap: 10px 28px; padding: 18px clamp(16px, 3vw, 40px); font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #A9C9B8">
+<span style="color: #7FA592; letter-spacing: 0.08em; text-transform: uppercase">Data checks</span>
+<span><span style="color: #3EF0A0">[ok]</span> all half-hours present</span>
+<span><span style="color: #3EF0A0">[ok]</span> [n] duplicate rows removed</span>
+<span><span style="color: #F5B547">[!!]</span> [n] half-hours had no forecast that far ahead</span>
+<span style="margin-left: auto; color: #7FA592">times in UK time (GMT)</span>
+</div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"motion":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":2200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { horizon: 24, conf: 90, t: 0 };
+  }
+  componentDidMount() {
+    let reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    const start = performance.now();
+    let last = 0;
+    const loop = (now) => {
+      this._raf = requestAnimationFrame(loop);
+      if (reduce || (this.props.motion ?? true) === false) return;
+      if (now - last < 66) return;
+      last = now;
+      this.setState({ t: (now - start) / 1000 });
+    };
+    this._raf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this._raf); }
+  series(h) {
+    const N = 96, a = [], f = [];
+    for (let i = 0; i < N; i++) {
+      const act = 9200 + 3800 * Math.sin(i / 15) + 1700 * Math.sin(i / 5.3 + 1) + 550 * Math.sin(i / 2.1);
+      const k = h / 24;
+      const err = k * (1300 * Math.sin(i / 8.7 + 2) + 650 * Math.sin(i / 3.6)) + 260 * Math.sin(i / 1.9) + 230 * k;
+      a.push(act); f.push(act + err);
+    }
+    return { a, f, N };
+  }
+  renderVals() {
+    const motion = this.props.motion ?? true;
+    const horizon = this.state.horizon ?? 24;
+    const conf = this.state.conf ?? 90;
+    const t = (this.state.t || 0) + 3;
+    const z = { 80: 1.28, 90: 1.64, 95: 1.96 }[conf];
+    const fmt = (n) => Math.round(n).toLocaleString('en-GB');
+    const { a, f, N } = this.series(horizon);
+
+    // mini wireframe wind field
+    const yaw = 0.6 + t * 0.15, pitch = 0.5, D = 9, F = 120, CX = 130, CY = 80;
+    const cyw = Math.cos(yaw), syw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const P = (x, y, zz) => {
+      const x1 = x * cyw - zz * syw, z1 = x * syw + zz * cyw;
+      const y2 = y * cp + z1 * sp, z2 = -y * sp + z1 * cp;
+      const s = F / (z2 + D);
+      return (CX + x1 * s).toFixed(1) + ' ' + (CY - y2 * s).toFixed(1);
+    };
+    const hgt = (x, zz) => 0.45 * Math.sin(x * 0.9 + t * 1.2) * Math.cos(zz * 0.7 - t * 0.7) + 0.2 * Math.sin((x + zz) * 1.3 - t * 1.6);
+    let mesh = '';
+    const n = 14, st = 0.6;
+    for (let j = 0; j <= n; j++) { const zz = -4.2 + j * st, pts = []; for (let i = 0; i <= n; i++) { const x = -4.2 + i * st; pts.push(P(x, hgt(x, zz), zz)); } mesh += 'M' + pts.join(' L') + ' '; }
+    for (let i = 0; i <= n; i++) { const x = -4.2 + i * st, pts = []; for (let j = 0; j <= n; j++) { const zz = -4.2 + j * st; pts.push(P(x, hgt(x, zz), zz)); } mesh += 'M' + pts.join(' L') + ' '; }
+    const spinner = 'rendering ' + ['|', '/', '-', '\\'][Math.floor(t * 8) % 4];
+
+    // chart
+    const x = (i) => 56 + i * 928 / (N - 1);
+    const y = (v) => 20 + (1 - Math.max(0, Math.min(18000, v)) / 18000) * 244;
+    const line = (arr) => 'M' + arr.map((v, i) => x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' L');
+    const sd = 380 + 30 * horizon;
+    const gapL = z * sd * 1.1, gapH = z * sd * 0.9;
+    const hi = f.map((v) => v + gapH), lo = f.map((v) => v - gapL);
+    let band = 'M' + hi.map((v, i) => x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' L');
+    for (let i = N - 1; i >= 0; i--) band += ' L' + x(i).toFixed(1) + ' ' + y(lo[i]).toFixed(1);
+    band += ' Z';
+
+    // numbers
+    const errs = a.map((v, i) => v - f[i]);
+    const avgMiss = errs.reduce((s, e) => s + Math.abs(e), 0) / N;
+    const worst = Math.min(...errs);
+    const bias = f.reduce((s, v, i) => s + (v - a[i]), 0) / N;
+    let biasLabel = 'About right', biasNote = 'No clear lean at this lead time';
+    if (bias > 100) { biasLabel = 'Too high'; biasNote = 'Over-promises wind by ~' + fmt(bias) + ' MW'; }
+    else if (bias < -100) { biasLabel = 'Too low'; biasNote = 'Under-promises wind by ~' + fmt(-bias) + ' MW'; }
+
+    // ASCII bars
+    const eighths = ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉'];
+    const bar = (v, max, w) => {
+      const u = v / max * w; const full = Math.floor(u); const rem = Math.floor((u - full) * 8);
+      const s = '█'.repeat(full) + (eighths[rem] || '');
+      return s + '·'.repeat(Math.max(0, w - full - (rem ? 1 : 0)));
+    };
+    const hs = [1, 4, 8, 12, 24, 36, 48];
+    const hv = hs.map((hh) => { const s = this.series(hh); return s.a.reduce((acc, v, i) => acc + Math.abs(v - s.f[i]), 0) / s.N; });
+    const hmax = Math.max(...hv);
+    const nearest = hs.reduce((best, hh) => Math.abs(hh - horizon) < Math.abs(best - horizon) ? hh : best, hs[0]);
+    const horizonBars = hs.map((hh, k) => ({
+      label: hh + 'h', bar: bar(hv[k], hmax, 26), val: fmt(hv[k]).padStart(6, ' '),
+      color: hh === nearest ? '#3EF0A0' : '#7FA592'
+    }));
+    const buckets = new Array(8).fill(0), counts = new Array(8).fill(0);
+    for (let i = 0; i < N; i++) { const bi = Math.floor(((i % 48) / 2) / 3); buckets[bi] += Math.abs(errs[i]); counts[bi]++; }
+    const tv = buckets.map((s, k) => s / counts[k]);
+    const tmax = Math.max(...tv);
+    const labels = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
+    const todBars = tv.map((v, k) => ({
+      label: labels[k], bar: bar(v, tmax, 26), val: fmt(v).padStart(6, ' '),
+      color: v === tmax ? '#F5B547' : '#A9C9B8'
+    }));
+
+    // backtest
+    let inside = 0;
+    for (let i = 0; i < N; i++) if (a[i] >= lo[i] && a[i] <= hi[i]) inside++;
+    const coverage = Math.round(inside / N * 100);
+    const filled = Math.round(coverage / 100 * 30);
+    const targetPos = Math.round(conf / 100 * 30);
+    const marker = ' '.repeat(targetPos + 1) + '▲ target ' + conf + '%';
+    const backtest = '[' + '█'.repeat(filled) + '░'.repeat(30 - filled) + '] ' + coverage + '%\n' + marker;
+    const gapPts = coverage - conf;
+    const verdict = Math.abs(gapPts) <= 4 ? '→ close to target: the range is trustworthy' : (gapPts < 0 ? '→ below target: try a more cautious setting' : '→ above target: the range may be wider than needed');
+    const verdictColor = Math.abs(gapPts) <= 4 ? '#3EF0A0' : '#F5D38A';
+
+    // replay
+    let fd = 0, ad = 0;
+    for (let i = 48; i < 96; i++) { fd += f[i]; ad += a[i]; }
+    fd /= 48; ad /= 48;
+    const diff = ad - fd;
+    const replay = [
+      '$ replay --delivery 15-JAN-2026 --ahead ' + horizon + 'h',
+      '  forecast said ...... ' + fmt(fd).padStart(7, ' ') + ' MW  (daily avg)',
+      '  wind delivered ..... ' + fmt(ad).padStart(7, ' ') + ' MW',
+      '  difference ......... ' + ((diff >= 0 ? '+' : '−') + fmt(Math.abs(diff))).padStart(7, ' ') + ' MW'
+    ].join('\n');
+
+    const cushionVal = Math.round(gapL / 50) * 50;
+    const confOptions = [80, 90, 95].map((c) => ({
+      label: c + '%', sub: c === 80 ? 'Relaxed' : c === 90 ? 'Balanced' : 'Cautious',
+      bg: c === conf ? '#3EF0A0' : 'transparent', fg: c === conf ? '#050B08' : '#A9C9B8',
+      pressed: c === conf ? 'true' : 'false',
+      pick: () => this.setState({ conf: c })
+    }));
+    const tod = labels[tv.indexOf(tmax)];
+    const summary = 'Forecasts made ' + horizon + ' hours ahead missed by about ' + fmt(avgMiss) +
+      ' MW on average, and were shakiest around ' + tod + '. To be covered ' + conf +
+      '% of the time, plan for roughly ' + fmt(cushionVal) + ' MW less wind than the forecast says.';
+
+    return {
+      motionClass: motion ? 'motion' : 'still',
+      horizon, conf,
+      onHorizon: (e) => this.setState({ horizon: Number(e.target.value) }),
+      confOptions,
+      meshPath: mesh, spinner,
+      actualPath: line(a), forecastPath: line(f), bandPath: band,
+      avgMiss: fmt(avgMiss), worst: fmt(Math.abs(worst)), biasLabel, biasNote,
+      cushion: fmt(cushionVal),
+      horizonBars, todBars,
+      backtest, verdict, verdictColor, replay, summary
+    };
+  }
+}
+</script>
+</body>
+</html>

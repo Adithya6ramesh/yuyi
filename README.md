@@ -9,12 +9,54 @@ accurate those forecasts were. That tells the company how big a safety margin to
 - **Times:** all UTC, which is the same as UK time in January.
 - **No prediction model:** the app only displays and evaluates forecasts that already exist.
 
+## Run it (backend + frontend)
+
+You need two terminals, one for each part.
+
+```powershell
+# terminal 1: the backend (Python), on http://127.0.0.1:8000
+cd backend
+.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+
+# terminal 2: the frontend (React), on http://localhost:5173
+cd frontend
+npm install        # first time only
+npm run dev
+```
+
+Open <http://localhost:5173>. The landing page is at `/` and the dashboard ("the desk")
+is at `/desk`. While developing, the frontend's `/api/...` requests are passed on to the
+backend by Vite's proxy (`frontend/vite.config.js`). When deployed, set `VITE_API_URL`
+to the backend's address instead (see `frontend/.env.example`).
+
+## Frontend
+
+React + Vite, plain JavaScript and plain CSS. It lives in `frontend/`.
+
+- `src/api.js`: one function per backend endpoint, with friendly error messages.
+- `src/styles/tokens.css`: every colour and font in one place.
+- `src/pages/Landing.jsx` and `src/pages/Desk.jsx` (+ `src/pages/desk/`): the two pages.
+- `src/art/`: the maths behind the animations (3D wireframe, ASCII wind field, ASCII
+  turbine, mini mesh). The animations stop if the computer asks for reduced motion,
+  when the tab is hidden, and when they're scrolled out of view.
+- `src/components/SeriesChart.jsx`: the hand-drawn SVG chart (no chart library).
+- Nothing is hard-coded: slider limits, caution levels, dates and the 09:50 deadline all
+  come from `/api/config`.
+
+**Tests:** `cd frontend` then `npm test`. They use Vitest and Testing Library with fake
+API answers, so the backend doesn't need to be running.
+
+**Screenshots:** put them in `docs/screenshots/`.
+
+**Design credit:** the visual design (the landing page and dashboard mockups in
+`frontend/design/`) was made with AI assistance, then rebuilt by hand as React components.
+
 ## API
 
 The backend is a FastAPI app in `backend/`. Every endpoint is under `/api`, and every
 date is a delivery day written as `YYYY-MM-DD`.
 
-### Run it
+### Run the backend on its own
 
 ```powershell
 cd backend

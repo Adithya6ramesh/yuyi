@@ -15,6 +15,10 @@ forecasts that already exist.
 
 **Live demo:** <https://windhedge.vercel.app> (the desk: <https://windhedge.vercel.app/desk>)
 
+
+## Architecture
+<img width="1658" height="2304" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/ec056edb-7f05-4009-87f8-01ced5d20223" />
+
 ## Quick start
 
 ### With Docker (easiest)

@@ -221,6 +221,6 @@ The desk shows every hour from 0 to 43.*
   results.
 - **Curtailment is the likely reason for the lean, but it isn't proven.**
 - **The 09:50 deadline is Nord Pool's** GB day-ahead gate closure; confirm which auction
-  the client uses.
+  the buyer uses.
 - **No prediction model was built.** These figures only measure and summarise the
   existing forecasts.

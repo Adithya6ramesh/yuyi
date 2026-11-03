@@ -160,7 +160,7 @@ What the rule picks (miss = actual − forecast; negative means the forecast was
 
 09:50 is the gate closure of **Nord Pool's GB day-ahead auction** (09:50 UK time = UTC in
 January). It's one setting, `DECISION_DEADLINE_TIME` in `backend/app/data/settings.py`,
-and **must be confirmed with the client**: other exchanges close at different times.
+and **must be confirmed with the buyer**: other exchanges close at different times.
 
 ### "No cheating" protection
 
@@ -326,7 +326,7 @@ library).
   (`docker compose --profile test run --rm backend-tests`). The normal image contains no
   tests and no pytest.
 
-**Hosting:** the brief allows Vercel or Heroku. The app is set up for **Vercel**, using its
+**Hosting:** I considered Vercel and Heroku. The app is set up for **Vercel**, using its
 native (generally available) FastAPI support. It's one Vercel project with **Root Directory
 `backend/`**:
 
@@ -359,7 +359,7 @@ native (generally available) FastAPI support. It's one Vercel project with **Roo
 
 **Live site:** <https://windhedge.vercel.app>
 
-**Security** (checked with a full audit):
+**Security** (checked with an AI-assisted audit):
 
 - **Headers:** every response carries security headers, set in `backend/vercel.json` for
   Vercel and in `frontend/security-headers.conf` + `nginx.conf` for Docker:
@@ -424,7 +424,7 @@ three jobs:
 | **Weekly downloads with retries** | One failed request doesn't mean starting over | One request per dataset (works, but fragile) |
 | Rule in **one function** with a built-in check | One place to get right and test; it fails loudly if broken | Repeating the logic per mode |
 | Slider **0–43 h**, default 24 h | Every January hour has a forecast up to 43.5 h ahead | 0–48 h, which would leave 155 empty hours |
-| Decision day deadline **09:50** | Nord Pool GB day-ahead gate closure | EPEX or other auction times (configurable; confirm with client) |
+| Decision day deadline **09:50** | Nord Pool GB day-ahead gate closure | EPEX or other auction times (configurable; confirm with the buyer) |
 | **3-hour blocks** for time of day | 93 values per block vs 31 per clock hour | Single hours (too noisy) |
 | Wind level by **forecast**, not actual | The actual is unknown at decision time | Grouping by actual, which looks better but cheats |
 | **One-size cushion** by default | Passed the back-test; per-group failed it | Per-wind-level cushion (kept as "experimental") |
@@ -433,7 +433,7 @@ three jobs:
 | **Hand-drawn SVG charts** | Exact match to the design, no library styling leaking through, small bundle | A chart library: less code, harder to restyle |
 | **JavaScript**, not TypeScript | Simpler for a first React project | TypeScript: safer types, more to learn |
 | **nginx forwards `/api`** in Docker | One address, so no CORS needed | Expose both containers and configure CORS |
-| **Vercel** for hosting | Free; both brief platforms considered | Heroku container (paid); Render or Fly (not in the brief) |
+| **Vercel** for hosting | Free tier, native FastAPI support | Heroku container (paid); Render or Fly |
 
 ## 11. Limitations, and what I'd build next
 
@@ -451,7 +451,7 @@ three jobs:
     between settings are noise.
 - **The test week was unusual:** its lean was −2,508 MW vs −1,531 MW in the learning
   weeks (Decision day). The over-forecast isn't stable even within a month.
-- The **09:50 deadline** is Nord Pool's; **confirm the client's actual auction**.
+- The **09:50 deadline** is Nord Pool's; **confirm the buyer's actual auction**.
 - **Curtailment** (wind farms paid to switch off when the grid is full) is the likely
   reason forecasts run high on windy hours. It's **not proven**: we have no curtailment or
   demand data.

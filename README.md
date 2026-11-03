@@ -66,7 +66,7 @@ Open <http://localhost:5173>. Vite's proxy passes `/api/...` to the backend.
 
 The whole app is containerised: `docker compose up --build` runs the frontend (nginx) and
 the API (FastAPI) with no other setup, and CI builds and starts both images on every
-push. For hosting I chose Vercel, one of the two platforms in the brief. Vercel can also
+push. For hosting I chose Vercel. Vercel can also
 run Docker images, but that feature (Container Runtime) is still in beta, so the live site
 uses Vercel's generally available FastAPI support instead: one serverless function runs the
 same API code, and the built React app is served from Vercel's CDN on the same address.
@@ -98,10 +98,11 @@ then builds and starts both Docker images and checks the app answers on port 808
 
 ## AI tools used
 
-Built with **Claude** (Anthropic's AI assistant, through Claude Code). It worked phase by
-phase, plan first and only after my approval, with tests on the tricky logic. The visual
-design was also made with AI assistance. Details: [DESIGN.md §12, "How AI tools were
-used"](docs/DESIGN.md#12-how-ai-tools-were-used).
+I designed and built Windhedge myself: the data pipeline, the forecast-matching rule, the
+metrics and cushion method, the API and the React desk. I used **Claude Code** as a
+coding assistant alongside that work (roughly a third of the effort): for planning
+reviews, some of the boilerplate and UI wiring, and for the security and dependency
+audit. Details: [DESIGN.md §12, "How AI tools were used"](docs/DESIGN.md#12-how-ai-tools-were-used).
 
 ## Project layout
 

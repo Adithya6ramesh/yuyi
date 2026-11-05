@@ -2,7 +2,6 @@
 
 *Don’t guess the gust, buy what you must.*
 
-[![CI](https://github.com/Adithya6ramesh/yuyi/actions/workflows/ci.yml/badge.svg)](https://github.com/Adithya6ramesh/yuyi/actions/workflows/ci.yml)
 
 A UK energy company buys electricity on the **day-ahead market**, so orders for tomorrow
 go in today. Windhedge shows the national wind forecast that was **really available when
